@@ -353,7 +353,7 @@ Work through these in order. Check each off only after all validation gates pass
 - [x] Setup Supabase client and server helpers in `lib/supabase/`
 - [x] Implement `SpoilerBlock.tsx` component with localStorage persistence
 - [x] Implement base layout (Header, Footer) with brand identity
-- [ ] Implement admin auth via middleware + cookie
+- [x] Implement admin auth via middleware + cookie
 - [ ] Implement admin dashboard with game/boss/item/NPC/area CRUD
 - [ ] Implement dynamic page templates for boss, item, NPC, area
 - [ ] Setup `app/sitemap.ts` and `app/robots.ts`
