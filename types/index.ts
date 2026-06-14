@@ -1,0 +1,26 @@
+// Re-export all Drizzle-inferred types from a single location.
+// Use these everywhere instead of importing directly from db/schema.ts.
+export type {
+  Area,
+  Boss,
+  BossAttributes,
+  Comment,
+  Game,
+  GameConfig,
+  Item,
+  ItemAttributes,
+  ItemType,
+  NewArea,
+  NewBoss,
+  NewComment,
+  NewGame,
+  NewItem,
+  NewItemType,
+  NewNpc,
+  NewRelease,
+  NewTierListEntry,
+  Npc,
+  NpcAttributes,
+  Release,
+  TierListEntry,
+} from '@/db/schema'
