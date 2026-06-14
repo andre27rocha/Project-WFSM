@@ -347,7 +347,7 @@ Work through these in order. Check each off only after all validation gates pass
 - [x] Configure Tailwind with brand tokens from this document
 - [x] Install and configure shadcn/ui
 - [x] Setup `config/env.ts` with Zod validation
-- [ ] Setup `config/site.ts` with site constants
+- [x] Setup `config/site.ts` with site constants
 - [ ] Create Supabase project and configure Drizzle schema (`db/schema.ts`)
 - [ ] Run first Drizzle migration — validate tables exist in Supabase
 - [ ] Setup Supabase client and server helpers in `lib/supabase/`
