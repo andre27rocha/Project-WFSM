@@ -349,7 +349,7 @@ Work through these in order. Check each off only after all validation gates pass
 - [x] Setup `config/env.ts` with Zod validation
 - [x] Setup `config/site.ts` with site constants
 - [x] Create Supabase project and configure Drizzle schema (`db/schema.ts`)
-- [ ] Run first Drizzle migration — validate tables exist in Supabase
+- [x] Run first Drizzle migration — validate tables exist in Supabase
 - [ ] Setup Supabase client and server helpers in `lib/supabase/`
 - [ ] Implement `SpoilerBlock.tsx` component with localStorage persistence
 - [ ] Implement base layout (Header, Footer) with brand identity
