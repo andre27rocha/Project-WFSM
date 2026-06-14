@@ -1,8 +1,13 @@
+import { siteConfig } from '@/config/site'
+
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-4xl font-semibold text-accent">VaniaCodex</h1>
-      <p className="mt-4 text-text-secondary">Coming soon.</p>
-    </main>
+    <div className="flex flex-col items-center justify-center py-32 text-center">
+      <h1 className="text-5xl font-semibold tracking-tight">
+        <span className="text-primary">Vania</span>
+        <span className="text-foreground">Codex</span>
+      </h1>
+      <p className="mt-4 max-w-md text-muted-foreground">{siteConfig.description}</p>
+    </div>
   )
 }
