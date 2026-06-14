@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-background: #111218;
+  --color-surface: #1a1a2e;
+  --color-accent: #ef9f27;
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #888888;
+
+  /* Fonts — CSS vars injected by next/font on <html> */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "Courier New", monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+}
