@@ -355,7 +355,7 @@ Work through these in order. Check each off only after all validation gates pass
 - [x] Implement base layout (Header, Footer) with brand identity
 - [x] Implement admin auth via middleware + cookie
 - [x] Implement admin dashboard with game/boss/item/NPC/area CRUD
-- [ ] Implement dynamic page templates for boss, item, NPC, area
+- [x] Implement dynamic page templates for boss, item, NPC, area
 - [ ] Setup `app/sitemap.ts` and `app/robots.ts`
 - [ ] Deploy to Vercel — confirm build passes in CI
 - [ ] Setup Umami analytics
