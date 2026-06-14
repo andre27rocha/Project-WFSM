@@ -21,6 +21,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   Dashboard
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin/games"
+                  className="rounded px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+                >
+                  Games
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
