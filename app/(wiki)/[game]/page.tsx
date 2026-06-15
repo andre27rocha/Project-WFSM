@@ -1,11 +1,12 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { GameConfig } from '@/db/schema'
 import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getPublishedBossesByGame } from '@/lib/supabase/queries/bosses'
+import { SectionHeader } from '@/components/wiki/SectionHeader'
+import { WikiImage } from '@/components/wiki/WikiImage'
 import { videoGameSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
@@ -41,14 +42,34 @@ const NAV_SECTIONS: NavSection[] = [
   { key: 'areas', label: 'Map', path: 'map', description: 'Interactive world map' },
   { key: 'npcs', label: 'NPCs', path: 'npcs', description: 'Characters & dialogue' },
   // Ender Lilies / Ender Magnolia
-  { key: 'spirits', label: 'Spirits', path: 'items/spirits', description: 'Moveset, upgrades & combos' },
+  {
+    key: 'spirits',
+    label: 'Spirits',
+    path: 'items/spirits',
+    description: 'Moveset, upgrades & combos',
+  },
   { key: 'relics', label: 'Relics', path: 'items/relics', description: 'Passive abilities' },
   // Blasphemous
   { key: 'prayers', label: 'Prayers', path: 'items/prayers', description: 'Active skills & magic' },
-  { key: 'rosaryBeads', label: 'Rosary Beads', path: 'items/rosary-beads', description: 'Passive equippables' },
-  { key: 'swordHearts', label: 'Sword Hearts', path: 'items/sword-hearts', description: 'Core stat modifiers' },
+  {
+    key: 'rosaryBeads',
+    label: 'Rosary Beads',
+    path: 'items/rosary-beads',
+    description: 'Passive equippables',
+  },
+  {
+    key: 'swordHearts',
+    label: 'Sword Hearts',
+    path: 'items/sword-hearts',
+    description: 'Core stat modifiers',
+  },
   // Salt and Sanctuary
-  { key: 'skillTrees', label: 'Skill Trees', path: 'items/skill-trees', description: 'Class progression paths' },
+  {
+    key: 'skillTrees',
+    label: 'Skill Trees',
+    path: 'items/skill-trees',
+    description: 'Class progression paths',
+  },
   { key: 'weaponTypes', label: 'Weapons', path: 'items/weapons', description: 'Arms & equipment' },
   // Generic
   { key: 'items', label: 'Items', path: 'items', description: 'Equipment & collectibles' },
@@ -77,120 +98,121 @@ export default async function GamePage({ params }: Props) {
     siteUrl: siteConfig.url,
   })
 
+  const meta = [game.developer, game.releaseYear?.toString()].filter(Boolean).join(' · ')
+
   return (
-    <div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
-      />
-      {/* Banner */}
-      {(game.bannerImageUrl ?? game.coverImageUrl) && (
-        <div className="relative h-44 w-full overflow-hidden">
-          <Image
-            src={(game.bannerImageUrl ?? game.coverImageUrl)!}
-            alt={`${game.name} banner`}
+    <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+
+      {/* Infobox: cover + meta, floated so the overview wraps around it */}
+      <aside className="border-wiki-border bg-wiki-card float-right clear-right mb-5 ml-6 w-[280px] overflow-hidden rounded border shadow-lg shadow-black/20">
+        <div className="relative aspect-[3/4] w-full">
+          <WikiImage
+            src={game.coverImageUrl ?? game.bannerImageUrl}
+            alt={game.name}
             fill
-            className="object-cover"
+            sizes="280px"
             priority
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-          <div className="absolute bottom-0 left-0 px-6 pb-4">
-            <h1 className="text-2xl font-bold text-foreground drop-shadow">{game.name}</h1>
-            <p className="text-xs text-muted-foreground">
-              {game.developer ?? ''}
-              {game.developer && game.releaseYear ? ' · ' : ''}
-              {game.releaseYear ?? ''}
-            </p>
-          </div>
         </div>
-      )}
-
-      {!game.bannerImageUrl && !game.coverImageUrl && (
-        <div className="border-b border-border px-6 py-4">
-          <h1 className="text-2xl font-bold text-foreground">{game.name}</h1>
-          <p className="text-xs text-muted-foreground">
-            {game.developer ?? ''}
-            {game.developer && game.releaseYear ? ' · ' : ''}
-            {game.releaseYear ?? ''}
-          </p>
-        </div>
-      )}
-
-      {/* Main content: 2-col table + game info */}
-      <div className="grid grid-cols-1 gap-0 border-b border-wiki-border lg:grid-cols-[320px_1fr]">
-        {/* Left: navigation table */}
-        <div className="border-b border-wiki-border lg:border-b-0 lg:border-r lg:border-r-wiki-border">
-          <div className="border-b border-wiki-border bg-[#1a1a2e] px-5 py-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80">
-              Contents
-            </p>
-          </div>
-          <table className="w-full border-collapse border border-wiki-border text-sm">
-            <tbody>
-              {availableSections.map(({ label, path, description }, i) => (
-                <tr
-                  key={path}
-                  className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[#1a1a2e]/30' : ''}`}
-                >
-                  <td className="border border-wiki-border px-4 py-2">
-                    <Link
-                      href={`/${gameSlug}/${path}`}
-                      className="font-medium text-primary hover:underline hover:underline-offset-2 transition-colors"
-                    >
-                      {label}
-                    </Link>
-                  </td>
-                  <td className="border border-wiki-border px-4 py-2 text-xs text-muted-foreground">
-                    {description}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Right: game info */}
-        <div className="px-6 py-5">
-          {game.description && (
-            <p className="mb-4 text-sm leading-relaxed text-foreground/80">{game.description}</p>
-          )}
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-wiki-border bg-primary/10 border-b">
+              <th
+                colSpan={2}
+                className="text-primary px-3 py-1.5 text-left text-[11px] font-bold tracking-wide uppercase"
+              >
+                {game.name}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             {game.developer && (
-              <>
-                <dt className="text-muted-foreground">Developer</dt>
-                <dd className="text-foreground">{game.developer}</dd>
-              </>
+              <tr className="border-wiki-border/60 border-b">
+                <td className="border-wiki-border/60 text-muted-foreground w-[90px] border-r bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold">
+                  Developer
+                </td>
+                <td className="text-foreground px-3 py-1.5 text-sm">{game.developer}</td>
+              </tr>
             )}
             {game.releaseYear && (
-              <>
-                <dt className="text-muted-foreground">Released</dt>
-                <dd className="text-foreground">{game.releaseYear}</dd>
-              </>
+              <tr>
+                <td className="border-wiki-border/60 text-muted-foreground border-r bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold">
+                  Released
+                </td>
+                <td className="text-foreground px-3 py-1.5 text-sm">{game.releaseYear}</td>
+              </tr>
             )}
-          </dl>
-        </div>
-      </div>
+          </tbody>
+        </table>
+      </aside>
+
+      {/* Title + overview */}
+      <h1 className="text-foreground mb-2 text-3xl font-bold">{game.name}</h1>
+      <div className="from-primary/60 mb-3 h-0.5 w-full bg-gradient-to-r to-transparent" />
+      {meta && <p className="text-muted-foreground mb-5 text-sm">{meta}</p>}
+      {game.description && (
+        <p className="text-foreground/85 mb-8 text-base leading-relaxed">{game.description}</p>
+      )}
+
+      <div className="clear-both" />
+
+      {/* Contents — dynamic modules from game_config */}
+      {availableSections.length > 0 && (
+        <section className="mb-10">
+          <SectionHeader>Contents</SectionHeader>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {availableSections.map(({ label, path, description }) => (
+              <Link
+                key={path}
+                href={`/${gameSlug}/${path}`}
+                className="group border-wiki-border bg-wiki-card hover:border-primary/40 flex items-center gap-3 rounded border px-4 py-3 transition-colors"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-primary font-semibold transition-colors group-hover:underline group-hover:underline-offset-2">
+                    {label}
+                  </p>
+                  <p className="text-muted-foreground mt-0.5 text-xs">{description}</p>
+                </div>
+                <svg
+                  className="text-muted-foreground/40 group-hover:text-primary h-4 w-4 shrink-0 transition-colors"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
+                </svg>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Recent additions */}
       {recentBosses.length > 0 && (
-        <div className="px-6 py-5">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Recently Added
-          </h2>
-          <ul className="space-y-1">
+        <section>
+          <SectionHeader>Recently Added</SectionHeader>
+          <ul className="divide-wiki-border border-wiki-border bg-surface/30 divide-y rounded border">
             {recentBosses.map((boss) => (
               <li key={boss.id}>
                 <Link
                   href={`/${gameSlug}/bosses/${boss.slug}`}
-                  className="text-sm text-foreground/80 hover:text-primary transition-colors"
+                  className="group hover:bg-surface/60 flex items-center gap-2.5 px-3 py-2.5 transition-colors"
                 >
-                  {boss.name}
-                  <span className="ml-2 text-xs text-muted-foreground">Boss</span>
+                  <span className="shrink-0 rounded bg-red-900/40 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-red-300 uppercase">
+                    Boss
+                  </span>
+                  <span className="text-foreground group-hover:text-primary min-w-0 flex-1 truncate text-sm transition-colors">
+                    {boss.name}
+                  </span>
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
     </div>
   )
