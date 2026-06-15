@@ -1,15 +1,17 @@
 import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { npcs } from '@/db/schema'
-import type { Npc, NewNpc } from '@/types'
+import type { Area, Npc, NewNpc } from '@/types'
 
-export async function getNpcBySlug(gameId: string, slug: string): Promise<Npc | null> {
+export type NpcWithArea = Npc & { area: Area | null }
+
+export async function getNpcBySlug(gameId: string, slug: string): Promise<NpcWithArea | null> {
   try {
     const result = await db.query.npcs.findFirst({
       where: and(eq(npcs.gameId, gameId), eq(npcs.slug, slug)),
       with: { area: true },
     })
-    return result ?? null
+    return (result as NpcWithArea | undefined) ?? null
   } catch (error) {
     console.error('[getNpcBySlug]', error)
     throw new Error('Failed to fetch NPC')

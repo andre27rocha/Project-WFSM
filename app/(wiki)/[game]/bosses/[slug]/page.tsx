@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { siteConfig } from '@/config/site'
@@ -8,6 +8,8 @@ import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { WikiImage } from '@/components/wiki/WikiImage'
+import { WikiPage } from '@/components/wiki/WikiPage'
 import { Comments } from '@/components/wiki/Comments'
 import { breadcrumbSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
@@ -34,6 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+const labelCls =
+  'w-[90px] border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground'
+
 export default async function BossPage({ params }: Props) {
   const { game: gameSlug, slug } = await params
   const game = await getGameBySlug(gameSlug)
@@ -58,28 +63,32 @@ export default async function BossPage({ params }: Props) {
   ])
 
   const attrs = boss.attributes
+  const metaParts = [
+    boss.area?.name,
+    attrs.hp !== undefined ? `${attrs.hp.toLocaleString()} HP` : null,
+    attrs.phases !== undefined
+      ? `${attrs.phases} ${attrs.phases === 1 ? 'phase' : 'phases'}`
+      : null,
+  ].filter(Boolean)
 
-  const hasStats =
-    attrs.hp !== undefined ||
-    attrs.phases !== undefined ||
-    attrs.location ||
-    (attrs.rewards ?? []).length > 0 ||
-    (attrs.weaknesses ?? []).length > 0 ||
-    (attrs.resistances ?? []).length > 0
-
-  const infobox = hasStats ? (
-    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[#1a1a2e]">
-      {boss.imageUrl && (
-        <div className="relative h-44 w-full">
-          <Image src={boss.imageUrl} alt={boss.name} fill className="object-cover" priority />
-        </div>
-      )}
+  const infobox = (
+    <aside className="border-wiki-border bg-wiki-card float-right clear-right mb-5 ml-6 w-[280px] overflow-hidden rounded border shadow-lg shadow-black/20 sm:w-[260px]">
+      <div className="relative h-52 w-full">
+        <WikiImage
+          src={boss.imageUrl}
+          alt={boss.name}
+          fill
+          sizes="280px"
+          priority
+          className="object-cover"
+        />
+      </div>
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b border-wiki-border bg-primary/10">
+          <tr className="border-wiki-border bg-primary/10 border-b">
             <th
               colSpan={2}
-              className="px-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-wide text-primary"
+              className="text-primary px-3 py-1.5 text-left text-[11px] font-bold tracking-wide uppercase"
             >
               {boss.name}
             </th>
@@ -87,83 +96,77 @@ export default async function BossPage({ params }: Props) {
         </thead>
         <tbody>
           {attrs.hp !== undefined && (
-            <tr className="border-b border-wiki-border/60">
-              <td className="w-[90px] border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                HP
-              </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">{attrs.hp.toLocaleString()}</td>
+            <tr className="border-wiki-border/60 border-b">
+              <td className={labelCls}>HP</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">{attrs.hp.toLocaleString()}</td>
             </tr>
           )}
           {attrs.phases !== undefined && (
-            <tr className="border-b border-wiki-border/60">
-              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Phases
-              </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">{attrs.phases}</td>
+            <tr className="border-wiki-border/60 border-b">
+              <td className={labelCls}>Phases</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">{attrs.phases}</td>
             </tr>
           )}
-          {attrs.location && (
-            <tr className="border-b border-wiki-border/60">
-              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Location
+          {(boss.area || attrs.location) && (
+            <tr className="border-wiki-border/60 border-b">
+              <td className={labelCls}>Location</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">
+                {boss.area ? (
+                  <Link
+                    href={`/${gameSlug}/areas/${boss.area.slug}`}
+                    className="text-primary transition-colors hover:underline hover:underline-offset-2"
+                  >
+                    {boss.area.name}
+                  </Link>
+                ) : (
+                  attrs.location
+                )}
               </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">{attrs.location}</td>
             </tr>
           )}
           {(attrs.weaknesses ?? []).length > 0 && (
-            <tr className="border-b border-wiki-border/60">
-              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Weak to
-              </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">
+            <tr className="border-wiki-border/60 border-b">
+              <td className={labelCls}>Weak to</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">
                 {attrs.weaknesses!.join(', ')}
               </td>
             </tr>
           )}
           {(attrs.resistances ?? []).length > 0 && (
-            <tr className="border-b border-wiki-border/60">
-              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Resists
-              </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">
+            <tr className="border-wiki-border/60 border-b">
+              <td className={labelCls}>Resists</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">
                 {attrs.resistances!.join(', ')}
               </td>
             </tr>
           )}
           {(attrs.rewards ?? []).length > 0 && (
             <tr>
-              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Drops
-              </td>
-              <td className="px-3 py-1.5 text-sm text-foreground">
-                {attrs.rewards!.join(', ')}
-              </td>
+              <td className={labelCls}>Drops</td>
+              <td className="text-foreground px-3 py-1.5 text-sm">{attrs.rewards!.join(', ')}</td>
             </tr>
           )}
         </tbody>
       </table>
     </aside>
-  ) : null
+  )
 
   const details = (
-    <div>
+    <>
       {infobox}
       <div className="space-y-4">
         {boss.description && (
-          <p className="text-sm leading-snug text-muted-foreground">{boss.description}</p>
+          <p className="text-foreground/85 text-base leading-relaxed">{boss.description}</p>
         )}
         {boss.content && <WikiMarkdown content={boss.content} />}
       </div>
       <div className="clear-both" />
-    </div>
+    </>
   )
 
   return (
-    <div className="px-6 py-5">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
-      />
+    <WikiPage>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
       <WikiBreadcrumb
         crumbs={[
           { label: game.name, href: `/${gameSlug}` },
@@ -171,9 +174,11 @@ export default async function BossPage({ params }: Props) {
           { label: boss.name },
         ]}
       />
-      <h1 className="mb-4 border-b border-primary/40 pb-1 text-2xl font-bold text-foreground">
-        {boss.name}
-      </h1>
+      <h1 className="text-foreground mb-2 text-3xl font-bold">{boss.name}</h1>
+      <div className="from-primary/60 mb-3 h-0.5 w-full bg-gradient-to-r to-transparent" />
+      {metaParts.length > 0 && (
+        <p className="text-muted-foreground mb-6 text-sm">{metaParts.join(' · ')}</p>
+      )}
 
       {boss.spoilerLevel > 0 ? (
         <SpoilerBlock level={boss.spoilerLevel} label={boss.name}>
@@ -183,12 +188,7 @@ export default async function BossPage({ params }: Props) {
         details
       )}
 
-      <Comments
-        comments={comments}
-        gameId={game.id}
-        entityType="boss"
-        entityId={boss.id}
-      />
-    </div>
+      <Comments comments={comments} gameId={game.id} entityType="boss" entityId={boss.id} />
+    </WikiPage>
   )
 }

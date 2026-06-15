@@ -5,13 +5,13 @@ import type { Area, Boss, NewBoss } from '@/types'
 
 export type BossWithArea = Boss & { area: Area | null }
 
-export async function getBossBySlug(gameId: string, slug: string): Promise<Boss | null> {
+export async function getBossBySlug(gameId: string, slug: string): Promise<BossWithArea | null> {
   try {
     const result = await db.query.bosses.findFirst({
       where: and(eq(bosses.gameId, gameId), eq(bosses.slug, slug)),
       with: { area: true },
     })
-    return result ?? null
+    return (result as BossWithArea | undefined) ?? null
   } catch (error) {
     console.error('[getBossBySlug]', error)
     throw new Error('Failed to fetch boss')
