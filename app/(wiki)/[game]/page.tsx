@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { GameConfig } from '@/db/schema'
@@ -52,99 +51,78 @@ export default async function GamePage({ params }: Props) {
     : []
 
   return (
-    <div>
-      {/* Banner */}
-      {(game.bannerImageUrl ?? game.coverImageUrl) && (
-        <div className="relative h-44 w-full overflow-hidden">
-          <Image
-            src={(game.bannerImageUrl ?? game.coverImageUrl)!}
-            alt={`${game.name} banner`}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-          <div className="absolute bottom-0 left-0 px-6 pb-4">
-            <h1 className="text-2xl font-bold text-foreground drop-shadow">{game.name}</h1>
-            <p className="text-xs text-muted-foreground">
-              {game.developer ?? ''}
-              {game.developer && game.releaseYear ? ' · ' : ''}
-              {game.releaseYear ?? ''}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {!game.bannerImageUrl && !game.coverImageUrl && (
-        <div className="border-b border-border px-6 py-4">
-          <h1 className="text-2xl font-bold text-foreground">{game.name}</h1>
-          <p className="text-xs text-muted-foreground">
-            {game.developer ?? ''}
-            {game.developer && game.releaseYear ? ' · ' : ''}
-            {game.releaseYear ?? ''}
-          </p>
-        </div>
-      )}
+    <div className="px-4 py-6">
+      {/* Title */}
+      <div className="mb-5 px-2">
+        <h1 className="text-3xl font-bold text-foreground drop-shadow">{game.name}</h1>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {game.developer ?? ''}
+          {game.developer && game.releaseYear ? ' · ' : ''}
+          {game.releaseYear ?? ''}
+        </p>
+      </div>
 
       {/* Main content: 2-col table + game info */}
-      <div className="grid grid-cols-1 gap-0 border-b border-wiki-border lg:grid-cols-[320px_1fr]">
-        {/* Left: navigation table */}
-        <div className="border-b border-wiki-border lg:border-b-0 lg:border-r lg:border-r-wiki-border">
-          <div className="border-b border-wiki-border bg-[#1a1a2e] px-5 py-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80">
-              Contents
-            </p>
+      <div className="mb-4 overflow-hidden rounded border border-wiki-border bg-[rgba(10,10,20,0.82)]">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr]">
+          {/* Left: navigation table */}
+          <div className="border-b border-wiki-border lg:border-b-0 lg:border-r lg:border-r-wiki-border">
+            <div className="border-b border-wiki-border bg-[rgba(20,10,40,0.60)] px-5 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80">
+                Contents
+              </p>
+            </div>
+            <table className="w-full border-collapse text-sm">
+              <tbody>
+                {availableSections.map(({ label, path, description }, i) => (
+                  <tr
+                    key={path}
+                    className={`transition-colors hover:bg-primary/5 ${i % 2 === 1 ? 'bg-[rgba(255,255,255,0.02)]' : ''}`}
+                  >
+                    <td className="border-b border-wiki-border/50 px-4 py-2">
+                      <Link
+                        href={`/${gameSlug}/${path}`}
+                        className="font-medium text-primary transition-colors hover:underline hover:underline-offset-2"
+                      >
+                        {label}
+                      </Link>
+                    </td>
+                    <td className="border-b border-l border-wiki-border/50 px-4 py-2 text-xs text-muted-foreground">
+                      {description}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <table className="w-full border-collapse border border-wiki-border text-sm">
-            <tbody>
-              {availableSections.map(({ label, path, description }, i) => (
-                <tr
-                  key={path}
-                  className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[#1a1a2e]/30' : ''}`}
-                >
-                  <td className="border border-wiki-border px-4 py-2">
-                    <Link
-                      href={`/${gameSlug}/${path}`}
-                      className="font-medium text-primary hover:underline hover:underline-offset-2 transition-colors"
-                    >
-                      {label}
-                    </Link>
-                  </td>
-                  <td className="border border-wiki-border px-4 py-2 text-xs text-muted-foreground">
-                    {description}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
 
-        {/* Right: game info */}
-        <div className="px-6 py-5">
-          {game.description && (
-            <p className="mb-4 text-sm leading-relaxed text-foreground/80">{game.description}</p>
-          )}
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
-            {game.developer && (
-              <>
-                <dt className="text-muted-foreground">Developer</dt>
-                <dd className="text-foreground">{game.developer}</dd>
-              </>
+          {/* Right: game info */}
+          <div className="px-6 py-5">
+            {game.description && (
+              <p className="mb-4 text-sm leading-relaxed text-foreground/80">{game.description}</p>
             )}
-            {game.releaseYear && (
-              <>
-                <dt className="text-muted-foreground">Released</dt>
-                <dd className="text-foreground">{game.releaseYear}</dd>
-              </>
-            )}
-          </dl>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
+              {game.developer && (
+                <>
+                  <dt className="text-muted-foreground">Developer</dt>
+                  <dd className="text-foreground">{game.developer}</dd>
+                </>
+              )}
+              {game.releaseYear && (
+                <>
+                  <dt className="text-muted-foreground">Released</dt>
+                  <dd className="text-foreground">{game.releaseYear}</dd>
+                </>
+              )}
+            </dl>
+          </div>
         </div>
       </div>
 
       {/* Recent additions */}
       {recentBosses.length > 0 && (
-        <div className="px-6 py-5">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        <div className="rounded border border-wiki-border bg-[rgba(10,10,20,0.82)] px-5 py-4">
+          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-primary/80">
             Recently Added
           </h2>
           <ul className="space-y-1">
@@ -152,7 +130,7 @@ export default async function GamePage({ params }: Props) {
               <li key={boss.id}>
                 <Link
                   href={`/${gameSlug}/bosses/${boss.slug}`}
-                  className="text-sm text-foreground/80 hover:text-primary transition-colors"
+                  className="text-sm text-foreground/80 transition-colors hover:text-primary"
                 >
                   {boss.name}
                   <span className="ml-2 text-xs text-muted-foreground">Boss</span>

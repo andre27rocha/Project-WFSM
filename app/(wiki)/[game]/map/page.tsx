@@ -31,7 +31,7 @@ export default async function MapPage({ params }: Props) {
   const mappableAreas = areas.filter((a) => a.mapX !== null && a.mapY !== null)
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-[calc(100vh-6.5rem)] flex-col bg-[rgba(8,8,18,0.70)]">
       <div className="flex items-center gap-4 border-b border-border px-6 py-3">
         <Link
           href={`/${gameSlug}`}
@@ -53,7 +53,7 @@ export default async function MapPage({ params }: Props) {
         </div>
 
         {/* Area sidebar */}
-        <aside className="hidden w-56 shrink-0 overflow-y-auto border-l border-border bg-card lg:block">
+        <aside className="hidden w-56 shrink-0 overflow-y-auto border-l border-wiki-border bg-[rgba(8,8,18,0.88)] backdrop-blur-sm lg:block">
           <div className="p-4">
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Areas

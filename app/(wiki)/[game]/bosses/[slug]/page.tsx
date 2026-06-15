@@ -47,7 +47,7 @@ export default async function BossPage({ params }: Props) {
     (attrs.resistances ?? []).length > 0
 
   const infobox = hasStats ? (
-    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[#1a1a2e]">
+    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[rgba(10,10,20,0.88)]">
       {boss.imageUrl && (
         <div className="relative h-44 w-full">
           <Image src={boss.imageUrl} alt={boss.name} fill className="object-cover" priority />
