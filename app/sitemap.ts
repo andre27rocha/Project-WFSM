@@ -13,6 +13,7 @@ const base = siteConfig.url
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
     { url: base, priority: 1 },
+    { url: `${base}/beginner-guide`, priority: 0.8 },
     { url: `${base}/tierlist`, priority: 0.7 },
   ]
 

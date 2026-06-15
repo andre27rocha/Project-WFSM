@@ -10,6 +10,7 @@ export const siteConfig = {
       { label: 'Games', href: '/' },
       { label: 'Tier Lists', href: '/tierlist' },
       { label: 'Releases', href: '/releases' },
+      { label: 'Beginner Guide', href: '/beginner-guide' },
     ],
   },
 

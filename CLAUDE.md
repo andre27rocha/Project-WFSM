@@ -761,7 +761,7 @@ A task is **done** when:
 - [x] SEO on-page — meta tags, schema.org (`VideoGame`, `ItemList`), sitemap update
 - [x] Tier list for items/spirits — dnd-kit drag & drop, state in URL
 - [x] 100% guide / Achievements page
-- [ ] Beginner guide for the genre
+- [x] Beginner guide for the genre
 
 ---
 

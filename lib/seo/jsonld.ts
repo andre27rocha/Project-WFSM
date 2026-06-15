@@ -54,6 +54,21 @@ export function itemListSchema(
   }
 }
 
+type FaqItem = { question: string; answer: string }
+
+export function faqPageSchema(url: string, items: FaqItem[]): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url,
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  }
+}
+
 type BreadcrumbItem = { name: string; url?: string }
 
 export function breadcrumbSchema(crumbs: BreadcrumbItem[]): Record<string, unknown> {
