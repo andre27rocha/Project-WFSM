@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getBossBySlug } from '@/lib/supabase/queries/bosses'
 import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
@@ -8,6 +9,7 @@ import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 import { Comments } from '@/components/wiki/Comments'
+import { breadcrumbSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -22,11 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: boss.name,
     description: boss.description?.slice(0, 155) ?? `${boss.name} boss guide for ${game.name}.`,
+    alternates: { canonical: `${siteConfig.url}/${gameSlug}/bosses/${slug}` },
     openGraph: {
       title: boss.name,
       description: boss.description?.slice(0, 155) ?? '',
       images: boss.imageUrl ? [{ url: boss.imageUrl }] : [],
     },
+    twitter: { card: 'summary_large_image' },
   }
 }
 
@@ -46,6 +50,12 @@ export default async function BossPage({ params }: Props) {
     upvotes: c.upvotes,
     createdAt: c.createdAt.toISOString(),
   }))
+
+  const jsonLd = breadcrumbSchema([
+    { name: game.name, url: `${siteConfig.url}/${gameSlug}` },
+    { name: 'Bosses', url: `${siteConfig.url}/${gameSlug}/bosses` },
+    { name: boss.name },
+  ])
 
   const attrs = boss.attributes
 
@@ -150,6 +160,10 @@ export default async function BossPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       <WikiBreadcrumb
         crumbs={[
           { label: game.name, href: `/${gameSlug}` },

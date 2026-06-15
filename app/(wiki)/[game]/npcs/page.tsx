@@ -2,9 +2,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getPublishedNpcsByGame } from '@/lib/supabase/queries/npcs'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { itemListSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -14,7 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { game: gameSlug } = await params
   const game = await getGameBySlug(gameSlug)
   if (!game) return {}
-  return { title: `NPCs – ${game.name}`, description: `All NPCs in ${game.name}.` }
+  return {
+    title: `NPCs – ${game.name}`,
+    description: `All NPCs in ${game.name}.`,
+    alternates: { canonical: `${siteConfig.url}/${gameSlug}/npcs` },
+  }
 }
 
 export default async function NpcListPage({ params }: Props) {
@@ -24,8 +30,19 @@ export default async function NpcListPage({ params }: Props) {
 
   const npcs = await getPublishedNpcsByGame(game.id)
 
+  const listUrl = `${siteConfig.url}/${gameSlug}/npcs`
+  const jsonLd = itemListSchema(
+    `NPCs – ${game.name}`,
+    listUrl,
+    npcs.map((n) => ({ name: n.name, url: `${listUrl}/${n.slug}` })),
+  )
+
   return (
     <div className="px-6 py-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       <WikiBreadcrumb
         crumbs={[{ label: game.name, href: `/${gameSlug}` }, { label: 'NPCs' }]}
       />

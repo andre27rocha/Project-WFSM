@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getAreaBySlug } from '@/lib/supabase/queries/areas'
 import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
@@ -8,6 +9,7 @@ import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 import { Comments } from '@/components/wiki/Comments'
+import { breadcrumbSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -22,11 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: area.name,
     description: area.description?.slice(0, 155) ?? `${area.name} area guide for ${game.name}.`,
+    alternates: { canonical: `${siteConfig.url}/${gameSlug}/areas/${slug}` },
     openGraph: {
       title: area.name,
       description: area.description?.slice(0, 155) ?? '',
       images: area.imageUrl ? [{ url: area.imageUrl }] : [],
     },
+    twitter: { card: 'summary_large_image' },
   }
 }
 
@@ -46,6 +50,12 @@ export default async function AreaPage({ params }: Props) {
     upvotes: c.upvotes,
     createdAt: c.createdAt.toISOString(),
   }))
+
+  const jsonLd = breadcrumbSchema([
+    { name: game.name, url: `${siteConfig.url}/${gameSlug}` },
+    { name: 'Areas', url: `${siteConfig.url}/${gameSlug}/areas` },
+    { name: area.name },
+  ])
 
   const details = (
     <div className="space-y-5">
@@ -76,6 +86,10 @@ export default async function AreaPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       <WikiBreadcrumb
         crumbs={[
           { label: game.name, href: `/${gameSlug}` },

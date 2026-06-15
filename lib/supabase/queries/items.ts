@@ -3,6 +3,8 @@ import { db } from '@/db'
 import { items, itemTypes } from '@/db/schema'
 import type { Item, ItemType, NewItem, NewItemType } from '@/types'
 
+export type ItemWithType = Item & { itemType: ItemType | null }
+
 export async function getItemBySlug(gameId: string, slug: string): Promise<Item | null> {
   try {
     const result = await db.query.items.findFirst({
@@ -50,6 +52,48 @@ export async function getAllItemsByGame(gameId: string): Promise<Item[]> {
   } catch (error) {
     console.error('[getAllItemsByGame]', error)
     throw new Error('Failed to fetch items')
+  }
+}
+
+export async function getItemTypeBySlug(gameId: string, slug: string): Promise<ItemType | null> {
+  try {
+    const result = await db.query.itemTypes.findFirst({
+      where: and(eq(itemTypes.gameId, gameId), eq(itemTypes.slug, slug)),
+    })
+    return result ?? null
+  } catch (error) {
+    console.error('[getItemTypeBySlug]', error)
+    throw new Error('Failed to fetch item type')
+  }
+}
+
+export async function getPublishedItemsByType(gameId: string, typeId: string): Promise<Item[]> {
+  try {
+    return await db.query.items.findMany({
+      where: and(
+        eq(items.gameId, gameId),
+        eq(items.itemTypeId, typeId),
+        eq(items.isPublished, true),
+      ),
+      orderBy: (i, { asc }) => [asc(i.name)],
+    })
+  } catch (error) {
+    console.error('[getPublishedItemsByType]', error)
+    throw new Error('Failed to fetch items by type')
+  }
+}
+
+export async function getPublishedItemsWithType(gameId: string): Promise<ItemWithType[]> {
+  try {
+    const result = await db.query.items.findMany({
+      where: and(eq(items.gameId, gameId), eq(items.isPublished, true)),
+      orderBy: (i, { asc }) => [asc(i.name)],
+      with: { itemType: true },
+    })
+    return result as ItemWithType[]
+  } catch (error) {
+    console.error('[getPublishedItemsWithType]', error)
+    throw new Error('Failed to fetch items with type')
   }
 }
 

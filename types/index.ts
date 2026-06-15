@@ -26,3 +26,4 @@ export type {
 } from '@/db/schema'
 
 export type { BossWithArea } from '@/lib/supabase/queries/bosses'
+export type { ItemWithType } from '@/lib/supabase/queries/items'

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getNpcBySlug } from '@/lib/supabase/queries/npcs'
 import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
@@ -8,6 +9,7 @@ import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 import { Comments } from '@/components/wiki/Comments'
+import { breadcrumbSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -22,11 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: npc.name,
     description: npc.description?.slice(0, 155) ?? `${npc.name} NPC in ${game.name}.`,
+    alternates: { canonical: `${siteConfig.url}/${gameSlug}/npcs/${slug}` },
     openGraph: {
       title: npc.name,
       description: npc.description?.slice(0, 155) ?? '',
       images: npc.imageUrl ? [{ url: npc.imageUrl }] : [],
     },
+    twitter: { card: 'summary_large_image' },
   }
 }
 
@@ -46,6 +50,12 @@ export default async function NpcPage({ params }: Props) {
     upvotes: c.upvotes,
     createdAt: c.createdAt.toISOString(),
   }))
+
+  const jsonLd = breadcrumbSchema([
+    { name: game.name, url: `${siteConfig.url}/${gameSlug}` },
+    { name: 'NPCs', url: `${siteConfig.url}/${gameSlug}/npcs` },
+    { name: npc.name },
+  ])
 
   const attrs = npc.attributes
 
@@ -120,6 +130,10 @@ export default async function NpcPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       <WikiBreadcrumb
         crumbs={[
           { label: game.name, href: `/${gameSlug}` },

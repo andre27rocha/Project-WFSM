@@ -3,8 +3,10 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { GameConfig } from '@/db/schema'
+import { siteConfig } from '@/config/site'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getPublishedBossesByGame } from '@/lib/supabase/queries/bosses'
+import { videoGameSchema, safeJsonLd } from '@/lib/seo/jsonld'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -17,7 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: game.name,
     description: game.description?.slice(0, 155) ?? `Wiki for ${game.name}.`,
-    openGraph: { title: game.name, description: game.description?.slice(0, 155) ?? '' },
+    alternates: { canonical: `${siteConfig.url}/${gameSlug}` },
+    openGraph: {
+      title: game.name,
+      description: game.description?.slice(0, 155) ?? '',
+      images: game.coverImageUrl ? [{ url: game.coverImageUrl }] : [],
+    },
+    twitter: { card: 'summary_large_image' },
   }
 }
 
@@ -51,8 +59,21 @@ export default async function GamePage({ params }: Props) {
         .slice(0, 5)
     : []
 
+  const jsonLd = videoGameSchema({
+    name: game.name,
+    description: game.description,
+    developer: game.developer,
+    coverImageUrl: game.coverImageUrl,
+    slug: game.slug,
+    siteUrl: siteConfig.url,
+  })
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       {/* Banner */}
       {(game.bannerImageUrl ?? game.coverImageUrl) && (
         <div className="relative h-44 w-full overflow-hidden">
