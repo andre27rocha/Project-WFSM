@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -13,6 +13,7 @@
   /* Wiki layout layers */
   --color-wiki-content: #16161e;
   --color-wiki-sidebar: #0e0e14;
+  --color-wiki-card: #222233;
   --color-wiki-border: #2a2a3e;
 }
 
@@ -26,10 +27,10 @@
 }
 .leaflet-popup-content-wrapper {
   background: #1a1a2e;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
   color: #e8e8e8;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 .leaflet-popup-tip {
   background: #1a1a2e;

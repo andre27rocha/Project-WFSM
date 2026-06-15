@@ -3,8 +3,8 @@ import { siteConfig } from '@/config/site'
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border border-t-[3px] border-t-primary bg-card">
-      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="border-wiki-border border-t-primary bg-card sticky top-0 z-50 border-t-[3px] border-b shadow-sm shadow-black/20">
+      <div className="flex h-12 items-center justify-between gap-4 px-4 sm:px-5">
         <Link
           href="/"
           className="shrink-0 text-xl font-semibold tracking-tight"
@@ -20,7 +20,7 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="rounded px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+                  className="text-muted-foreground hover:bg-accent/10 hover:text-foreground rounded px-3 py-2 text-sm transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -37,11 +37,11 @@ export function Header() {
             placeholder="Search…"
             autoComplete="off"
             aria-label="Search the wiki"
-            className="h-8 w-36 rounded border border-border bg-background/40 px-3 pr-7 text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-primary/60 focus:outline-none focus:ring-1 focus:ring-primary/30 lg:w-48"
+            className="border-border bg-background/40 text-foreground placeholder:text-muted-foreground/50 focus:border-primary/60 focus:ring-primary/30 h-8 w-36 rounded border px-3 pr-7 text-xs focus:ring-1 focus:outline-none lg:w-48"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/50 transition-colors hover:text-primary"
+            className="text-muted-foreground/50 hover:text-primary absolute top-1/2 right-2 -translate-y-1/2 transition-colors"
             aria-label="Submit search"
           >
             <svg
