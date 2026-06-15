@@ -758,7 +758,7 @@ A task is **done** when:
 - [x] Populate all NPCs in DB
 - [x] Interactive map with Leaflet.js — areas with pins for bosses, NPCs, items
 - [x] Comments system on every entity page (boss, item, NPC, area)
-- [ ] SEO on-page — meta tags, schema.org (`VideoGame`, `ItemList`), sitemap update
+- [x] SEO on-page — meta tags, schema.org (`VideoGame`, `ItemList`), sitemap update
 - [ ] Tier list for items/spirits — dnd-kit drag & drop, state in URL
 - [ ] 100% guide / Achievements page
 - [ ] Beginner guide for the genre
