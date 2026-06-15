@@ -17,6 +17,17 @@ const kindBadge: Record<string, string> = {
   npc: 'bg-blue-900/40 text-blue-300',
 }
 
+/** Wiki-style section header: amber bar marker + label + horizontal rule. */
+function SectionHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-4 flex items-center gap-2.5 text-sm font-bold uppercase tracking-wider text-primary">
+      <span className="h-4 w-1 rounded-full bg-primary" aria-hidden="true" />
+      {children}
+      <span className="ml-1 h-px flex-1 bg-wiki-border" aria-hidden="true" />
+    </h2>
+  )
+}
+
 export default async function HomePage() {
   const [games, featured, recentlyAdded] = await Promise.all([
     getPublishedGames(),
@@ -25,58 +36,61 @@ export default async function HomePage() {
   ])
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
-      {/* Site identity strip */}
-      <div className="mb-5 border-b border-wiki-border pb-3">
-        <p className="text-sm text-muted-foreground">{siteConfig.description}</p>
-      </div>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Hero — page identity + prominent search */}
+      <header className="mb-10 border-b border-wiki-border pb-7">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <span className="text-primary">Vania</span>
+          <span className="text-foreground">Codex</span>
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          {siteConfig.description}
+        </p>
 
-      {/* Prominent search */}
-      <form action="/search" method="get" className="relative mb-8">
-        <input
-          name="q"
-          type="search"
-          placeholder="Search bosses, items, NPCs, areas…"
-          autoComplete="off"
-          aria-label="Search the wiki"
-          className="h-10 w-full rounded border border-wiki-border bg-surface px-4 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary/60 focus:outline-none focus:ring-1 focus:ring-primary/30"
-        />
-        <button
-          type="submit"
-          aria-label="Submit search"
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 transition-colors hover:text-primary"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+        <form action="/search" method="get" className="relative mt-6 max-w-xl">
+          <input
+            name="q"
+            type="search"
+            placeholder="Search bosses, items, NPCs, areas…"
+            autoComplete="off"
+            aria-label="Search the wiki"
+            className="h-11 w-full rounded border border-wiki-border bg-surface px-4 pr-11 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary/60 focus:outline-none focus:ring-1 focus:ring-primary/30"
+          />
+          <button
+            type="submit"
+            aria-label="Submit search"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 transition-colors hover:text-primary"
           >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-        </button>
-      </form>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </button>
+        </form>
+      </header>
 
       {/* Two-column: Featured + Recently Added */}
-      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
+      <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px] lg:gap-10">
         {/* Featured */}
         <section>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Featured
-          </h2>
+          <SectionHeader>Featured</SectionHeader>
           {featured ? (
             <Link
               href={`/${featured.game.slug}/bosses/${featured.slug}`}
               className="group block overflow-hidden rounded border border-wiki-border bg-surface transition-colors hover:border-primary/40"
             >
               {featured.imageUrl ? (
-                <div className="relative h-48 w-full">
+                <div className="relative h-56 w-full sm:h-64">
                   <Image
                     src={featured.imageUrl}
                     alt={featured.name}
@@ -84,33 +98,33 @@ export default async function HomePage() {
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 640px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 p-4">
-                    <span className="mb-1 inline-block rounded bg-red-900/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-5">
+                    <span className="mb-1.5 inline-block rounded bg-red-900/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
                       Boss
                     </span>
-                    <p className="text-lg font-semibold leading-tight text-white">
+                    <p className="text-xl font-bold leading-tight text-white">
                       {featured.name}
                     </p>
-                    <p className="text-xs text-white/60">{featured.game.name}</p>
+                    <p className="mt-0.5 text-xs text-white/60">{featured.game.name}</p>
                   </div>
                 </div>
               ) : (
-                <div className="p-4">
-                  <span className="mb-1 inline-block rounded bg-red-900/40 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
+                <div className="p-5">
+                  <span className="mb-1.5 inline-block rounded bg-red-900/40 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-300">
                     Boss
                   </span>
-                  <p className="font-semibold text-foreground">{featured.name}</p>
-                  <p className="text-xs text-muted-foreground">{featured.game.name}</p>
+                  <p className="text-xl font-bold text-foreground">{featured.name}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{featured.game.name}</p>
                 </div>
               )}
               {featured.description && (
-                <p className="border-t border-wiki-border px-4 py-3 text-sm text-muted-foreground line-clamp-3">
+                <p className="border-t border-wiki-border px-5 py-4 text-sm leading-relaxed text-muted-foreground line-clamp-3">
                   {featured.description}
                 </p>
               )}
-              <div className="border-t border-wiki-border px-4 py-2.5">
-                <span className="text-xs font-medium text-primary group-hover:underline">
+              <div className="border-t border-wiki-border px-5 py-3">
+                <span className="text-xs font-semibold text-primary group-hover:underline">
                   Read more →
                 </span>
               </div>
@@ -122,17 +136,15 @@ export default async function HomePage() {
 
         {/* Recently Added */}
         <section>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Recently Added
-          </h2>
+          <SectionHeader>Recently Added</SectionHeader>
           {recentlyAdded.length > 0 ? (
             <>
-              <div className="divide-y divide-wiki-border rounded border border-wiki-border">
+              <div className="divide-y divide-wiki-border rounded border border-wiki-border bg-surface/30">
                 {recentlyAdded.map((entry) => (
                   <Link
                     key={entry.id}
                     href={entry.href}
-                    className="flex items-center gap-2.5 px-3 py-2.5 transition-colors hover:bg-surface/60"
+                    className="group flex items-center gap-2.5 px-3 py-3 transition-colors hover:bg-surface/60"
                   >
                     <span
                       className={cn(
@@ -142,7 +154,7 @@ export default async function HomePage() {
                     >
                       {entry.label}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                    <span className="min-w-0 flex-1 truncate text-sm text-foreground transition-colors group-hover:text-primary">
                       {entry.name}
                     </span>
                     <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/60">
@@ -153,7 +165,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/search"
-                className="mt-2 block text-right text-xs text-primary hover:underline"
+                className="mt-3 block text-right text-xs font-medium text-primary hover:underline"
               >
                 See all →
               </Link>
@@ -166,55 +178,45 @@ export default async function HomePage() {
 
       {/* Explore by Game */}
       <section>
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Explore by Game
-        </h2>
+        <SectionHeader>Explore by Game</SectionHeader>
         {games.length === 0 ? (
           <p className="text-sm text-muted-foreground">No games published yet.</p>
         ) : (
-          <div className="divide-y divide-wiki-border rounded border border-wiki-border">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {games.map((game) => (
               <Link
                 key={game.id}
                 href={`/${game.slug}`}
-                className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-surface/40"
+                className="group flex gap-4 rounded border border-wiki-border bg-surface p-4 transition-colors hover:border-primary/40"
               >
                 {game.coverImageUrl ? (
-                  <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded">
+                  <div className="relative h-[72px] w-[108px] shrink-0 overflow-hidden rounded">
                     <Image
                       src={game.coverImageUrl}
                       alt={game.name}
                       fill
                       className="object-cover"
-                      sizes="80px"
+                      sizes="108px"
                     />
                   </div>
                 ) : (
-                  <div className="h-14 w-20 shrink-0 rounded bg-wiki-border" />
+                  <div className="h-[72px] w-[108px] shrink-0 rounded bg-wiki-border" />
                 )}
-                <div className="min-w-0 flex-1">
-                  <span className="font-medium text-foreground">{game.name}</span>
-                  <p className="text-xs text-muted-foreground">
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <span className="font-semibold text-foreground transition-colors group-hover:text-primary">
+                    {game.name}
+                  </span>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {[game.developer, game.releaseYear?.toString()]
                       .filter(Boolean)
                       .join(' · ')}
                   </p>
                   {game.description && (
-                    <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">
+                    <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                       {game.description}
                     </p>
                   )}
                 </div>
-                <svg
-                  className="h-4 w-4 shrink-0 text-muted-foreground/40"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
-                </svg>
               </Link>
             ))}
           </div>
