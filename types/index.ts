@@ -20,10 +20,12 @@ export type {
   NewItemType,
   NewNpc,
   NewRelease,
+  NewReleaseCalendar,
   NewTierListEntry,
   Npc,
   NpcAttributes,
   Release,
+  ReleaseCalendar,
   TierListEntry,
 } from '@/db/schema'
 

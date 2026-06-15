@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm'
 import {
   boolean,
+  date,
   integer,
   jsonb,
   pgTable,
@@ -281,6 +282,29 @@ export const achievements = pgTable(
   (t) => [unique('achievements_game_id_slug_unique').on(t.gameId, t.slug)]
 )
 
+/**
+ * Upcoming and released genre games calendar — independent of the games table.
+ * Tracks metroidvanias/soulsvaniass not yet (or never) added as full wiki entries.
+ */
+export const releaseCalendar = pgTable('release_calendar', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  description: text('description'),
+  coverImageUrl: text('cover_image_url'),
+  developer: text('developer'),
+  /** ISO date string 'YYYY-MM-DD' — null means date TBD. */
+  releaseDate: date('release_date'),
+  /** e.g. ["PC", "PS5", "Switch", "Xbox", "Mobile"] */
+  platforms: jsonb('platforms').$type<string[]>().notNull().default([]),
+  /** 'metroidvania' | 'soulsvania' | 'hybrid' */
+  genre: text('genre').notNull().default('metroidvania'),
+  /** 'announced' | 'released' | 'delayed' */
+  status: text('status').notNull().default('announced'),
+  externalLink: text('external_link'),
+  ...timestamps,
+})
+
 // ---------------------------------------------------------------------------
 // RELATIONS (enables db.query.* relational API)
 // ---------------------------------------------------------------------------
@@ -378,3 +402,6 @@ export type NewTierListEntry = typeof tierListEntries.$inferInsert
 
 export type Achievement = typeof achievements.$inferSelect
 export type NewAchievement = typeof achievements.$inferInsert
+
+export type ReleaseCalendar = typeof releaseCalendar.$inferSelect
+export type NewReleaseCalendar = typeof releaseCalendar.$inferInsert
