@@ -751,11 +751,11 @@ A task is **done** when:
 
 - [x] Add Ender Lilies entry to `games` table with correct `game_config`
 - [x] Game homepage at `/ender-lilies` — modules from `game_config`, nav to each section
-- [ ] Populate all areas in DB
-- [ ] Populate all bosses in DB (strategies + drops + lore)
-- [ ] Populate all Spirits in DB (moveset, upgrades, combos)
-- [ ] Populate all Relics in DB
-- [ ] Populate all NPCs in DB
+- [x] Populate all areas in DB
+- [x] Populate all bosses in DB (strategies + drops + lore)
+- [x] Populate all Spirits in DB (moveset, upgrades, combos)
+- [x] Populate all Relics in DB
+- [x] Populate all NPCs in DB
 - [ ] Interactive map with Leaflet.js — areas with pins for bosses, NPCs, items
 - [ ] Comments system on every entity page (boss, item, NPC, area)
 - [ ] SEO on-page — meta tags, schema.org (`VideoGame`, `ItemList`), sitemap update
