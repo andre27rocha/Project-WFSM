@@ -17,6 +17,9 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
   { key: 'tierlist', label: 'Tier List', path: 'tierlist' },
 ]
 
+const linkCls =
+  'flex items-center gap-1.5 px-3 py-1.5 text-[13px] text-primary/80 hover:text-primary hover:underline hover:underline-offset-2 transition-colors'
+
 interface WikiSidebarProps {
   game: Game
   gameSlug: string
@@ -26,74 +29,72 @@ export function WikiSidebar({ game, gameSlug }: WikiSidebarProps) {
   const sections = SIDEBAR_SECTIONS.filter(({ key }) => Boolean(game.gameConfig[key]))
 
   return (
-    <aside className="hidden lg:flex lg:flex-col w-[220px] shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto border-r border-border bg-card/40">
-      <div className="px-3 py-4 flex-1">
+    <aside className="hidden lg:flex lg:flex-col w-[220px] shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto border-r border-wiki-border bg-wiki-sidebar">
+      {/* Game title */}
+      <div className="border-b border-wiki-border px-3 py-3">
         <Link
           href={`/${gameSlug}`}
-          className="block px-2 py-1.5 mb-4 text-xs font-semibold text-primary hover:text-primary/80 transition-colors truncate uppercase tracking-wide"
+          className="block text-[11px] font-bold uppercase tracking-widest text-primary hover:underline hover:underline-offset-2 transition-colors"
         >
           {game.name}
         </Link>
-
-        <div className="mb-5">
-          <p className="px-2 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
-            Navigation
-          </p>
-          <ul>
-            {sections.map(({ label, path }) => (
-              <li key={path}>
-                <Link
-                  href={`/${gameSlug}/${path}`}
-                  className="flex items-center px-2 py-1 text-[13px] text-foreground/75 hover:text-primary hover:bg-primary/5 rounded transition-colors"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <p className="px-2 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
-            Quick Links
-          </p>
-          <ul>
-            <li>
-              <Link
-                href={`/${gameSlug}`}
-                className="flex items-center px-2 py-1 text-[13px] text-foreground/75 hover:text-primary hover:bg-primary/5 rounded transition-colors"
-              >
-                Game Overview
-              </Link>
-            </li>
-            {game.gameConfig.bosses && (
-              <li>
-                <Link
-                  href={`/${gameSlug}/bosses`}
-                  className="flex items-center px-2 py-1 text-[13px] text-foreground/75 hover:text-primary hover:bg-primary/5 rounded transition-colors"
-                >
-                  All Bosses
-                </Link>
-              </li>
-            )}
-            {game.gameConfig.areas && (
-              <li>
-                <Link
-                  href={`/${gameSlug}/map`}
-                  className="flex items-center px-2 py-1 text-[13px] text-foreground/75 hover:text-primary hover:bg-primary/5 rounded transition-colors"
-                >
-                  World Map
-                </Link>
-              </li>
-            )}
-          </ul>
-        </div>
       </div>
 
-      <div className="px-3 py-3 border-t border-border/50">
+      {/* Navigation */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="border-b border-wiki-border px-3 py-1.5">
+          <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+            Navigation
+          </p>
+        </div>
+        <ul className="border-b border-wiki-border">
+          {sections.map(({ label, path }) => (
+            <li key={path} className="border-b border-wiki-border/60 last:border-b-0">
+              <Link href={`/${gameSlug}/${path}`} className={linkCls}>
+                <span className="text-muted-foreground/40 text-[10px]">›</span>
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Quick Links */}
+        <div className="border-b border-wiki-border px-3 py-1.5">
+          <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+            Quick Links
+          </p>
+        </div>
+        <ul>
+          <li className="border-b border-wiki-border/60">
+            <Link href={`/${gameSlug}`} className={linkCls}>
+              <span className="text-muted-foreground/40 text-[10px]">›</span>
+              Game Overview
+            </Link>
+          </li>
+          {game.gameConfig.bosses && (
+            <li className="border-b border-wiki-border/60">
+              <Link href={`/${gameSlug}/bosses`} className={linkCls}>
+                <span className="text-muted-foreground/40 text-[10px]">›</span>
+                All Bosses
+              </Link>
+            </li>
+          )}
+          {game.gameConfig.areas && (
+            <li className="border-b border-wiki-border/60">
+              <Link href={`/${gameSlug}/map`} className={linkCls}>
+                <span className="text-muted-foreground/40 text-[10px]">›</span>
+                World Map
+              </Link>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-wiki-border px-3 py-2">
         <Link
           href="/"
-          className="flex items-center px-2 py-1 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          className="block text-[11px] text-muted-foreground/50 hover:text-primary hover:underline transition-colors"
         >
           ← All Games
         </Link>

@@ -9,6 +9,11 @@
   --color-surface: #1a1a2e;
   --color-text-primary: #e8e8e8;
   --color-text-secondary: #888888;
+
+  /* Wiki layout layers */
+  --color-wiki-content: #16161e;
+  --color-wiki-sidebar: #0e0e14;
+  --color-wiki-border: #2a2a3e;
 }
 
 /* Leaflet map overrides — keep dark-theme consistent */

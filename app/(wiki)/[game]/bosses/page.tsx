@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getPublishedBossesByGameWithArea } from '@/lib/supabase/queries/bosses'
+import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -25,46 +26,51 @@ export default async function BossListPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
-      <p className="mb-1 text-xs text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
-          {game.name}
-        </Link>{' '}
-        / Bosses
-      </p>
-      <h1 className="mb-4 text-xl font-bold text-foreground">Bosses</h1>
+      <WikiBreadcrumb
+        crumbs={[{ label: game.name, href: `/${gameSlug}` }, { label: 'Bosses' }]}
+      />
+      <h1 className="mb-4 border-b border-primary/40 pb-1 text-xl font-bold text-foreground">
+        Bosses
+      </h1>
 
       {bosses.length === 0 ? (
         <p className="text-sm text-muted-foreground">No bosses yet.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full border-collapse border border-wiki-border text-sm">
             <thead>
-              <tr className="border-b border-border bg-card/60">
-                <th className="w-14 px-3 py-2 text-left" />
-                <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <tr className="bg-[#1a1a2e]">
+                <th className="w-14 border border-wiki-border px-3 py-2 text-left" />
+                <th className="border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary">
                   Name
                 </th>
-                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary sm:table-cell">
                   Area
                 </th>
-                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground md:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
                   HP
                 </th>
-                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground md:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
                   Phases
                 </th>
-                <th className="w-8 px-3 py-2" />
+                <th className="w-8 border border-wiki-border px-3 py-2" />
               </tr>
             </thead>
             <tbody>
               {bosses.map((boss, i) => {
                 const attrs = boss.attributes
+                const spoilerBorder =
+                  boss.spoilerLevel >= 2
+                    ? 'border-l-[3px] border-l-red-500'
+                    : boss.spoilerLevel === 1
+                      ? 'border-l-[3px] border-l-primary'
+                      : ''
                 return (
                   <tr
                     key={boss.id}
-                    className={`border-b border-border/50 hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-card/25' : ''}`}
+                    className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[#1a1a2e]/30' : ''}`}
                   >
-                    <td className="px-3 py-2">
+                    <td className={`border border-wiki-border px-3 py-2 ${spoilerBorder}`}>
                       {boss.imageUrl ? (
                         <Image
                           src={boss.imageUrl}
@@ -77,10 +83,10 @@ export default async function BossListPage({ params }: Props) {
                         <div className="h-10 w-10 rounded bg-muted" />
                       )}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="border border-wiki-border px-3 py-2">
                       <Link
                         href={`/${gameSlug}/bosses/${boss.slug}`}
-                        className="font-medium text-foreground hover:text-primary transition-colors"
+                        className="font-medium text-primary hover:underline hover:underline-offset-2 transition-colors"
                       >
                         {boss.name}
                       </Link>
@@ -90,11 +96,11 @@ export default async function BossListPage({ params }: Props) {
                         </p>
                       )}
                     </td>
-                    <td className="hidden px-3 py-2 text-muted-foreground sm:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 text-sm text-muted-foreground sm:table-cell">
                       {boss.area ? (
                         <Link
                           href={`/${gameSlug}/areas/${boss.area.slug}`}
-                          className="hover:text-primary transition-colors"
+                          className="text-primary/80 hover:text-primary hover:underline hover:underline-offset-2 transition-colors"
                         >
                           {boss.area.name}
                         </Link>
@@ -102,17 +108,19 @@ export default async function BossListPage({ params }: Props) {
                         '—'
                       )}
                     </td>
-                    <td className="hidden px-3 py-2 font-mono text-muted-foreground md:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 font-mono text-sm text-muted-foreground md:table-cell">
                       {attrs.hp !== undefined ? attrs.hp.toLocaleString() : '—'}
                     </td>
-                    <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 text-sm text-muted-foreground md:table-cell">
                       {attrs.phases !== undefined ? attrs.phases : '—'}
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="border border-wiki-border px-3 py-2 text-center">
                       {boss.spoilerLevel > 0 && (
                         <span
                           title={`Spoiler level ${boss.spoilerLevel}`}
-                          className="text-xs text-amber-500/70"
+                          className={
+                            boss.spoilerLevel >= 2 ? 'text-xs text-red-400' : 'text-xs text-primary/70'
+                          }
                         >
                           ⚠
                         </span>

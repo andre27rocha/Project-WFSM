@@ -87,30 +87,32 @@ export default async function GamePage({ params }: Props) {
       )}
 
       {/* Main content: 2-col table + game info */}
-      <div className="grid grid-cols-1 gap-0 border-b border-border lg:grid-cols-[320px_1fr]">
+      <div className="grid grid-cols-1 gap-0 border-b border-wiki-border lg:grid-cols-[320px_1fr]">
         {/* Left: navigation table */}
-        <div className="border-b border-border lg:border-b-0 lg:border-r">
-          <div className="px-5 py-3 border-b border-border bg-card/40">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+        <div className="border-b border-wiki-border lg:border-b-0 lg:border-r lg:border-r-wiki-border">
+          <div className="border-b border-wiki-border bg-[#1a1a2e] px-5 py-3">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary/80">
               Contents
             </p>
           </div>
-          <table className="w-full text-sm">
+          <table className="w-full border-collapse border border-wiki-border text-sm">
             <tbody>
-              {availableSections.map(({ label, path, description }) => (
+              {availableSections.map(({ label, path, description }, i) => (
                 <tr
                   key={path}
-                  className="border-b border-border/50 hover:bg-primary/5 transition-colors"
+                  className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[#1a1a2e]/30' : ''}`}
                 >
-                  <td className="px-5 py-2.5">
+                  <td className="border border-wiki-border px-4 py-2">
                     <Link
                       href={`/${gameSlug}/${path}`}
-                      className="font-medium text-foreground hover:text-primary"
+                      className="font-medium text-primary hover:underline hover:underline-offset-2 transition-colors"
                     >
                       {label}
                     </Link>
                   </td>
-                  <td className="px-5 py-2.5 text-xs text-muted-foreground">{description}</td>
+                  <td className="border border-wiki-border px-4 py-2 text-xs text-muted-foreground">
+                    {description}
+                  </td>
                 </tr>
               ))}
             </tbody>

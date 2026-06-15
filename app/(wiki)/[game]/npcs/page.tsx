@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getPublishedNpcsByGame } from '@/lib/supabase/queries/npcs'
+import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -25,13 +26,12 @@ export default async function NpcListPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
-      <p className="mb-1 text-xs text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
-          {game.name}
-        </Link>{' '}
-        / NPCs
-      </p>
-      <h1 className="mb-4 text-xl font-bold text-foreground">NPCs</h1>
+      <WikiBreadcrumb
+        crumbs={[{ label: game.name, href: `/${gameSlug}` }, { label: 'NPCs' }]}
+      />
+      <h1 className="mb-4 border-b border-primary/40 pb-1 text-xl font-bold text-foreground">
+        NPCs
+      </h1>
 
       {npcs.length === 0 ? (
         <p className="text-sm text-muted-foreground">No NPCs yet.</p>
@@ -41,7 +41,7 @@ export default async function NpcListPage({ params }: Props) {
             <Link
               key={npc.id}
               href={`/${gameSlug}/npcs/${npc.slug}`}
-              className="group overflow-hidden rounded border border-border bg-card transition-colors hover:border-primary/50"
+              className="group overflow-hidden rounded border border-wiki-border bg-[#1a1a2e] transition-colors hover:border-primary/50"
             >
               {npc.imageUrl && (
                 <div className="relative h-32 w-full overflow-hidden">
@@ -54,7 +54,7 @@ export default async function NpcListPage({ params }: Props) {
                 </div>
               )}
               <div className="p-3">
-                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                <p className="text-sm font-semibold text-primary transition-colors group-hover:underline group-hover:underline-offset-2">
                   {npc.name}
                 </p>
                 {npc.attributes.role && (

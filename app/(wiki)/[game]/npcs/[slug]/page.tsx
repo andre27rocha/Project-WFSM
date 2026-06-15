@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -6,6 +5,7 @@ import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getNpcBySlug } from '@/lib/supabase/queries/npcs'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
+import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -44,41 +44,47 @@ export default async function NpcPage({ params }: Props) {
     (attrs.services ?? []).length > 0 ||
     (attrs.dialogueHints ?? []).length > 0
 
-  const infobox = hasDetails && (
-    <aside className="mb-6 w-full overflow-hidden rounded border border-border bg-card lg:mb-0 lg:w-56 lg:shrink-0 xl:w-64">
+  const infobox = hasDetails ? (
+    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[#1a1a2e]">
       {npc.imageUrl && (
-        <div className="relative h-48 w-full">
+        <div className="relative h-44 w-full">
           <Image src={npc.imageUrl} alt={npc.name} fill className="object-cover" priority />
         </div>
       )}
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b border-border bg-primary/10">
+          <tr className="border-b border-wiki-border bg-primary/10">
             <th
               colSpan={2}
-              className="px-3 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-primary"
+              className="px-3 py-1.5 text-left text-[11px] font-bold uppercase tracking-wide text-primary"
             >
-              Info
+              {npc.name}
             </th>
           </tr>
         </thead>
         <tbody>
           {attrs.role && (
-            <tr className="border-b border-border/40">
-              <td className="w-24 px-3 py-1.5 text-xs text-muted-foreground">Role</td>
-              <td className="px-3 py-1.5 font-medium text-foreground">{attrs.role}</td>
+            <tr className="border-b border-wiki-border/60">
+              <td className="w-[90px] border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                Role
+              </td>
+              <td className="px-3 py-1.5 text-sm text-foreground">{attrs.role}</td>
             </tr>
           )}
           {attrs.questRelated && (
-            <tr className="border-b border-border/40">
-              <td className="px-3 py-1.5 text-xs text-muted-foreground">Quest</td>
-              <td className="px-3 py-1.5 font-medium text-foreground">Yes</td>
+            <tr className="border-b border-wiki-border/60">
+              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                Quest
+              </td>
+              <td className="px-3 py-1.5 text-sm text-foreground">Yes</td>
             </tr>
           )}
           {(attrs.services ?? []).length > 0 && (
             <tr>
-              <td className="px-3 py-1.5 text-xs text-muted-foreground">Services</td>
-              <td className="px-3 py-1.5 font-medium text-foreground">
+              <td className="border-r border-wiki-border/60 bg-[#111218]/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                Services
+              </td>
+              <td className="px-3 py-1.5 text-sm text-foreground">
                 {attrs.services!.join(', ')}
               </td>
             </tr>
@@ -86,34 +92,33 @@ export default async function NpcPage({ params }: Props) {
         </tbody>
       </table>
     </aside>
-  )
+  ) : null
 
   const details = (
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-      <div className="min-w-0 flex-1 space-y-5">
+    <div>
+      {infobox}
+      <div className="space-y-4">
         {npc.description && (
-          <p className="text-sm leading-relaxed text-muted-foreground">{npc.description}</p>
+          <p className="text-sm leading-snug text-muted-foreground">{npc.description}</p>
         )}
         {npc.content && <WikiMarkdown content={npc.content} />}
       </div>
-      {infobox}
+      <div className="clear-both" />
     </div>
   )
 
   return (
     <div className="px-6 py-5">
-      <p className="mb-3 text-xs text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
-          {game.name}
-        </Link>{' '}
-        /{' '}
-        <Link href={`/${gameSlug}/npcs`} className="hover:text-primary transition-colors">
-          NPCs
-        </Link>{' '}
-        / {npc.name}
-      </p>
-
-      <h1 className="mb-5 text-2xl font-bold text-foreground">{npc.name}</h1>
+      <WikiBreadcrumb
+        crumbs={[
+          { label: game.name, href: `/${gameSlug}` },
+          { label: 'NPCs', href: `/${gameSlug}/npcs` },
+          { label: npc.name },
+        ]}
+      />
+      <h1 className="mb-4 border-b border-primary/40 pb-1 text-2xl font-bold text-foreground">
+        {npc.name}
+      </h1>
 
       {npc.spoilerLevel > 0 ? (
         <SpoilerBlock level={npc.spoilerLevel} label={npc.name}>

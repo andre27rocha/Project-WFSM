@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -6,6 +5,7 @@ import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getAreaBySlug } from '@/lib/supabase/queries/areas'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
+import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -65,16 +65,13 @@ export default async function AreaPage({ params }: Props) {
 
   return (
     <div className="px-6 py-5">
-      <p className="mb-3 text-xs text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
-          {game.name}
-        </Link>{' '}
-        /{' '}
-        <Link href={`/${gameSlug}/areas`} className="hover:text-primary transition-colors">
-          Areas
-        </Link>{' '}
-        / {area.name}
-      </p>
+      <WikiBreadcrumb
+        crumbs={[
+          { label: game.name, href: `/${gameSlug}` },
+          { label: 'Areas', href: `/${gameSlug}/areas` },
+          { label: area.name },
+        ]}
+      />
 
       {area.imageUrl && (
         <div className="relative mb-4 h-44 w-full overflow-hidden rounded">
@@ -82,7 +79,9 @@ export default async function AreaPage({ params }: Props) {
         </div>
       )}
 
-      <h1 className="mb-4 text-2xl font-bold text-foreground">{area.name}</h1>
+      <h1 className="mb-4 border-b border-primary/40 pb-1 text-2xl font-bold text-foreground">
+        {area.name}
+      </h1>
 
       {area.spoilerLevel > 0 ? (
         <SpoilerBlock level={area.spoilerLevel} label={area.name}>
