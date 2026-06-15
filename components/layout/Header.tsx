@@ -3,8 +3,8 @@ import { siteConfig } from '@/config/site'
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border border-t-[3px] border-t-primary bg-card/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-border border-t-[3px] border-t-primary bg-card">
+      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
           className="shrink-0 text-xl font-semibold tracking-tight"

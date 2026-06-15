@@ -13,53 +13,65 @@ export default async function HomePage() {
   const games = await getPublishedGames()
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-16">
-      <div className="mb-14 text-center">
-        <h1 className="text-5xl font-semibold tracking-tight">
-          <span className="text-primary">Vania</span>
-          <span className="text-foreground">Codex</span>
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground">{siteConfig.description}</p>
+    <div className="mx-auto max-w-5xl px-4 py-6">
+      {/* Site identity — compact strip, not a hero */}
+      <div className="mb-6 border-b border-wiki-border pb-4">
+        <p className="text-sm text-muted-foreground">{siteConfig.description}</p>
       </div>
 
+      {/* Games directory */}
+      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        Games
+      </h2>
+
       {games.length === 0 ? (
-        <p className="text-center text-muted-foreground">No games published yet.</p>
+        <p className="text-sm text-muted-foreground">No games published yet.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="divide-y divide-wiki-border rounded border border-wiki-border">
           {games.map((game) => (
             <Link
               key={game.id}
               href={`/${game.slug}`}
-              className="group relative overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary/50"
+              className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-surface/40"
             >
               {game.coverImageUrl ? (
-                <div className="relative h-48 w-full">
+                <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded">
                   <Image
                     src={game.coverImageUrl}
                     alt={game.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover"
+                    sizes="80px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 </div>
               ) : (
-                <div className="h-48 w-full bg-surface" />
+                <div className="h-14 w-20 shrink-0 rounded bg-surface" />
               )}
-              <div className="p-5">
-                <h2 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {game.name}
-                </h2>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {game.developer ?? ''}
-                  {game.developer && game.releaseYear ? ' · ' : ''}
-                  {game.releaseYear ?? ''}
+
+              <div className="min-w-0 flex-1">
+                <span className="font-medium text-foreground">{game.name}</span>
+                <p className="text-xs text-muted-foreground">
+                  {[game.developer, game.releaseYear?.toString()]
+                    .filter(Boolean)
+                    .join(' · ')}
                 </p>
                 {game.description && (
-                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                  <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">
                     {game.description}
                   </p>
                 )}
               </div>
+
+              <svg
+                className="h-4 w-4 shrink-0 text-muted-foreground/40"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
+              </svg>
             </Link>
           ))}
         </div>
