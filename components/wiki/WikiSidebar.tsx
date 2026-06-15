@@ -15,6 +15,7 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
   { key: 'relics', label: 'Relics', path: 'items/relics' },
   { key: 'items', label: 'Items', path: 'items' },
   { key: 'tierlist', label: 'Tier List', path: 'tierlist' },
+  { key: 'achievements', label: '100% Guide', path: 'guide/100' },
 ]
 
 const linkCls =

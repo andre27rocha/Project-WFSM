@@ -27,6 +27,8 @@ export type GameConfig = {
   areas?: boolean
   tierlist?: boolean
   relics?: boolean
+  spirits?: boolean
+  achievements?: boolean
   [key: string]: boolean | undefined
 }
 
@@ -255,6 +257,30 @@ export const tierListEntries = pgTable(
   ]
 )
 
+export const achievements = pgTable(
+  'achievements',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    gameId: uuid('game_id')
+      .notNull()
+      .references(() => games.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    description: text('description'),
+    howToUnlock: text('how_to_unlock'),
+    imageUrl: text('image_url'),
+    /** Platform/trophy points — 0 means not applicable. */
+    points: integer('points').notNull().default(0),
+    /** Optional grouping, e.g. "Story", "Combat", "Exploration". */
+    category: text('category'),
+    spoilerLevel: integer('spoiler_level').notNull().default(0),
+    sortOrder: integer('sort_order').notNull().default(0),
+    isPublished: boolean('is_published').notNull().default(false),
+    ...timestamps,
+  },
+  (t) => [unique('achievements_game_id_slug_unique').on(t.gameId, t.slug)]
+)
+
 // ---------------------------------------------------------------------------
 // RELATIONS (enables db.query.* relational API)
 // ---------------------------------------------------------------------------
@@ -268,6 +294,7 @@ export const gamesRelations = relations(games, ({ many }) => ({
   releases: many(releases),
   comments: many(comments),
   tierListEntries: many(tierListEntries),
+  achievements: many(achievements),
 }))
 
 export const areasRelations = relations(areas, ({ one, many }) => ({
@@ -314,6 +341,10 @@ export const tierListEntriesRelations = relations(tierListEntries, ({ one }) => 
   game: one(games, { fields: [tierListEntries.gameId], references: [games.id] }),
 }))
 
+export const achievementsRelations = relations(achievements, ({ one }) => ({
+  game: one(games, { fields: [achievements.gameId], references: [games.id] }),
+}))
+
 // ---------------------------------------------------------------------------
 // INFERRED TYPES — import from here or re-export via types/index.ts
 // ---------------------------------------------------------------------------
@@ -344,3 +375,6 @@ export type NewComment = typeof comments.$inferInsert
 
 export type TierListEntry = typeof tierListEntries.$inferSelect
 export type NewTierListEntry = typeof tierListEntries.$inferInsert
+
+export type Achievement = typeof achievements.$inferSelect
+export type NewAchievement = typeof achievements.$inferInsert

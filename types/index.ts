@@ -1,6 +1,7 @@
 // Re-export all Drizzle-inferred types from a single location.
 // Use these everywhere instead of importing directly from db/schema.ts.
 export type {
+  Achievement,
   Area,
   Boss,
   BossAttributes,
@@ -10,6 +11,7 @@ export type {
   Item,
   ItemAttributes,
   ItemType,
+  NewAchievement,
   NewArea,
   NewBoss,
   NewComment,
