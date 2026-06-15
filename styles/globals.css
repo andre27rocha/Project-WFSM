@@ -11,6 +11,28 @@
   --color-text-secondary: #888888;
 }
 
+/* Leaflet map overrides — keep dark-theme consistent */
+.leaflet-container {
+  background: #111218;
+  font-family: inherit;
+}
+.leaflet-control-attribution {
+  display: none;
+}
+.leaflet-popup-content-wrapper {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.5rem;
+  color: #e8e8e8;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+.leaflet-popup-tip {
+  background: #1a1a2e;
+}
+.leaflet-popup-close-button {
+  color: #888888 !important;
+}
+
 @layer base {
   body {
     @apply bg-background text-foreground;

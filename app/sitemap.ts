@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { MetadataRoute } from 'next'
 import { siteConfig } from '@/config/site'
 import { getPublishedGames } from '@/lib/supabase/queries/games'

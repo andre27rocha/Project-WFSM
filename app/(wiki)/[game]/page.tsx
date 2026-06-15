@@ -40,9 +40,9 @@ const SECTIONS: SectionDef[] = [
   },
   {
     key: 'areas',
-    label: 'Areas',
+    label: 'Map',
     description: 'Explore the world',
-    path: 'areas',
+    path: 'map',
     Icon: MapPin,
   },
   {
