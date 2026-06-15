@@ -11,8 +11,17 @@ const SIDEBAR_SECTIONS: SidebarSection[] = [
   { key: 'bosses', label: 'Bosses', path: 'bosses' },
   { key: 'areas', label: 'Interactive Map', path: 'map' },
   { key: 'npcs', label: 'NPCs', path: 'npcs' },
+  // Ender Lilies / Ender Magnolia
   { key: 'spirits', label: 'Spirits', path: 'items/spirits' },
   { key: 'relics', label: 'Relics', path: 'items/relics' },
+  // Blasphemous
+  { key: 'prayers', label: 'Prayers', path: 'items/prayers' },
+  { key: 'rosaryBeads', label: 'Rosary Beads', path: 'items/rosary-beads' },
+  { key: 'swordHearts', label: 'Sword Hearts', path: 'items/sword-hearts' },
+  // Salt and Sanctuary
+  { key: 'skillTrees', label: 'Skill Trees', path: 'items/skill-trees' },
+  { key: 'weaponTypes', label: 'Weapons', path: 'items/weapons' },
+  // Generic
   { key: 'items', label: 'Items', path: 'items' },
   { key: 'tierlist', label: 'Tier List', path: 'tierlist' },
   { key: 'achievements', label: '100% Guide', path: 'guide/100' },

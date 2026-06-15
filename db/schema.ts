@@ -30,6 +30,13 @@ export type GameConfig = {
   relics?: boolean
   spirits?: boolean
   achievements?: boolean
+  // Blasphemous
+  prayers?: boolean
+  rosaryBeads?: boolean
+  swordHearts?: boolean
+  // Salt and Sanctuary
+  skillTrees?: boolean
+  weaponTypes?: boolean
   [key: string]: boolean | undefined
 }
 

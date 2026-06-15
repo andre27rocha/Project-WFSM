@@ -40,8 +40,17 @@ const NAV_SECTIONS: NavSection[] = [
   { key: 'bosses', label: 'Bosses', path: 'bosses', description: 'Strategies, drops & lore' },
   { key: 'areas', label: 'Map', path: 'map', description: 'Interactive world map' },
   { key: 'npcs', label: 'NPCs', path: 'npcs', description: 'Characters & dialogue' },
+  // Ender Lilies / Ender Magnolia
   { key: 'spirits', label: 'Spirits', path: 'items/spirits', description: 'Moveset, upgrades & combos' },
   { key: 'relics', label: 'Relics', path: 'items/relics', description: 'Passive abilities' },
+  // Blasphemous
+  { key: 'prayers', label: 'Prayers', path: 'items/prayers', description: 'Active skills & magic' },
+  { key: 'rosaryBeads', label: 'Rosary Beads', path: 'items/rosary-beads', description: 'Passive equippables' },
+  { key: 'swordHearts', label: 'Sword Hearts', path: 'items/sword-hearts', description: 'Core stat modifiers' },
+  // Salt and Sanctuary
+  { key: 'skillTrees', label: 'Skill Trees', path: 'items/skill-trees', description: 'Class progression paths' },
+  { key: 'weaponTypes', label: 'Weapons', path: 'items/weapons', description: 'Arms & equipment' },
+  // Generic
   { key: 'items', label: 'Items', path: 'items', description: 'Equipment & collectibles' },
   { key: 'tierlist', label: 'Tier List', path: 'tierlist', description: 'Community rankings' },
 ]
