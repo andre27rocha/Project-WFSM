@@ -45,7 +45,7 @@ export default async function NpcPage({ params }: Props) {
     (attrs.dialogueHints ?? []).length > 0
 
   const infobox = hasDetails ? (
-    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[rgba(10,10,20,0.88)]">
+    <aside className="float-right clear-right mb-4 ml-6 w-[260px] overflow-hidden rounded border border-wiki-border bg-[#1a1a2e]">
       {npc.imageUrl && (
         <div className="relative h-44 w-full">
           <Image src={npc.imageUrl} alt={npc.name} fill className="object-cover" priority />

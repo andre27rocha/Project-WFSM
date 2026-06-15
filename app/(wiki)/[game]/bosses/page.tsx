@@ -36,24 +36,24 @@ export default async function BossListPage({ params }: Props) {
       {bosses.length === 0 ? (
         <p className="text-sm text-muted-foreground">No bosses yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded border border-wiki-border bg-[rgba(10,10,20,0.82)]">
-          <table className="w-full border-collapse text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-wiki-border text-sm">
             <thead>
-              <tr className="bg-[rgba(20,10,40,0.60)]">
-                <th className="w-14 border border-wiki-border/60 px-3 py-2 text-left" />
-                <th className="border border-wiki-border/60 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary">
+              <tr className="bg-[#1a1a2e]">
+                <th className="w-14 border border-wiki-border px-3 py-2 text-left" />
+                <th className="border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary">
                   Name
                 </th>
-                <th className="hidden border border-wiki-border/60 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary sm:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary sm:table-cell">
                   Area
                 </th>
-                <th className="hidden border border-wiki-border/60 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
                   HP
                 </th>
-                <th className="hidden border border-wiki-border/60 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
+                <th className="hidden border border-wiki-border px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary md:table-cell">
                   Phases
                 </th>
-                <th className="w-8 border border-wiki-border/60 px-3 py-2" />
+                <th className="w-8 border border-wiki-border px-3 py-2" />
               </tr>
             </thead>
             <tbody>
@@ -68,9 +68,9 @@ export default async function BossListPage({ params }: Props) {
                 return (
                   <tr
                     key={boss.id}
-                    className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[rgba(255,255,255,0.03)]' : ''}`}
+                    className={`hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-[#1a1a2e]/30' : ''}`}
                   >
-                    <td className={`border border-wiki-border/60 px-3 py-2 ${spoilerBorder}`}>
+                    <td className={`border border-wiki-border px-3 py-2 ${spoilerBorder}`}>
                       {boss.imageUrl ? (
                         <Image
                           src={boss.imageUrl}
@@ -83,7 +83,7 @@ export default async function BossListPage({ params }: Props) {
                         <div className="h-10 w-10 rounded bg-muted" />
                       )}
                     </td>
-                    <td className="border border-wiki-border/60 px-3 py-2">
+                    <td className="border border-wiki-border px-3 py-2">
                       <Link
                         href={`/${gameSlug}/bosses/${boss.slug}`}
                         className="font-medium text-primary hover:underline hover:underline-offset-2 transition-colors"
@@ -96,7 +96,7 @@ export default async function BossListPage({ params }: Props) {
                         </p>
                       )}
                     </td>
-                    <td className="hidden border border-wiki-border/60 px-3 py-2 text-sm text-muted-foreground sm:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 text-sm text-muted-foreground sm:table-cell">
                       {boss.area ? (
                         <Link
                           href={`/${gameSlug}/areas/${boss.area.slug}`}
@@ -108,13 +108,13 @@ export default async function BossListPage({ params }: Props) {
                         '—'
                       )}
                     </td>
-                    <td className="hidden border border-wiki-border/60 px-3 py-2 font-mono text-sm text-muted-foreground md:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 font-mono text-sm text-muted-foreground md:table-cell">
                       {attrs.hp !== undefined ? attrs.hp.toLocaleString() : '—'}
                     </td>
-                    <td className="hidden border border-wiki-border/60 px-3 py-2 text-sm text-muted-foreground md:table-cell">
+                    <td className="hidden border border-wiki-border px-3 py-2 text-sm text-muted-foreground md:table-cell">
                       {attrs.phases !== undefined ? attrs.phases : '—'}
                     </td>
-                    <td className="border border-wiki-border/60 px-3 py-2 text-center">
+                    <td className="border border-wiki-border px-3 py-2 text-center">
                       {boss.spoilerLevel > 0 && (
                         <span
                           title={`Spoiler level ${boss.spoilerLevel}`}

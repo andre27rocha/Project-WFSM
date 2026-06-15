@@ -41,7 +41,7 @@ export default async function NpcListPage({ params }: Props) {
             <Link
               key={npc.id}
               href={`/${gameSlug}/npcs/${npc.slug}`}
-              className="group overflow-hidden rounded border border-wiki-border bg-[rgba(10,10,20,0.82)] backdrop-blur-sm transition-colors hover:border-primary/50"
+              className="group overflow-hidden rounded border border-wiki-border bg-[#1a1a2e] transition-colors hover:border-primary/50"
             >
               {npc.imageUrl && (
                 <div className="relative h-32 w-full overflow-hidden">

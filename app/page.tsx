@@ -25,45 +25,40 @@ export default async function HomePage() {
       {games.length === 0 ? (
         <p className="text-center text-muted-foreground">No games published yet.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {games.map((game) => (
             <Link
               key={game.id}
               href={`/${game.slug}`}
-              className="group relative h-64 overflow-hidden rounded-xl border border-wiki-border transition-all duration-300 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/10"
+              className="group relative overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary/50"
             >
               {game.coverImageUrl ? (
-                <Image
-                  src={game.coverImageUrl}
-                  alt={game.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={game.coverImageUrl}
+                    alt={game.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                </div>
               ) : (
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, #0d0d20 0%, #1a0830 50%, #0a1020 100%)',
-                  }}
-                />
+                <div className="h-48 w-full bg-surface" />
               )}
-
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/10 transition-opacity duration-300 group-hover:from-black/85" />
-
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-5">
-                <h2 className="text-xl font-bold leading-tight text-white">{game.name}</h2>
-                {game.developer && (
-                  <p className="mt-0.5 text-xs text-white/55">
-                    {game.developer}
-                    {game.releaseYear ? ` · ${game.releaseYear}` : ''}
+              <div className="p-5">
+                <h2 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {game.name}
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {game.developer ?? ''}
+                  {game.developer && game.releaseYear ? ' · ' : ''}
+                  {game.releaseYear ?? ''}
+                </p>
+                {game.description && (
+                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                    {game.description}
                   </p>
                 )}
-                <div className="mt-3 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  Enter Wiki <span aria-hidden>→</span>
-                </div>
               </div>
             </Link>
           ))}
