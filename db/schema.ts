@@ -230,6 +230,7 @@ export const comments = pgTable('comments', {
   parentId: uuid('parent_id').references((): AnyPgColumn => comments.id, { onDelete: 'cascade' }),
   authorName: text('author_name').notNull(),
   content: text('content').notNull(),
+  upvotes: integer('upvotes').notNull().default(0),
   isApproved: boolean('is_approved').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

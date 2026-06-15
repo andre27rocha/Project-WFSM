@@ -15,6 +15,13 @@
       "when": 1781522105011,
       "tag": "0001_fluffy_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781538599004,
+      "tag": "0002_faithful_ogun",
+      "breakpoints": true
     }
   ]
 }

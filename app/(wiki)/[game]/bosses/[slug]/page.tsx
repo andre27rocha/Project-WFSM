@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getBossBySlug } from '@/lib/supabase/queries/bosses'
+import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { Comments } from '@/components/wiki/Comments'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -35,6 +37,15 @@ export default async function BossPage({ params }: Props) {
 
   const boss = await getBossBySlug(game.id, slug)
   if (!boss || !boss.isPublished) notFound()
+
+  const rawComments = await getCommentsByEntity(game.id, 'boss', boss.id)
+  const comments = rawComments.map((c) => ({
+    id: c.id,
+    authorName: c.authorName,
+    content: c.content,
+    upvotes: c.upvotes,
+    createdAt: c.createdAt.toISOString(),
+  }))
 
   const attrs = boss.attributes
 
@@ -157,6 +168,13 @@ export default async function BossPage({ params }: Props) {
       ) : (
         details
       )}
+
+      <Comments
+        comments={comments}
+        gameId={game.id}
+        entityType="boss"
+        entityId={boss.id}
+      />
     </div>
   )
 }

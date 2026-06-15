@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getItemBySlug } from '@/lib/supabase/queries/items'
+import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { Comments } from '@/components/wiki/Comments'
 
 interface Props {
   params: Promise<{ game: string; type: string; slug: string }>
@@ -43,6 +45,15 @@ export default async function ItemPage({ params }: Props) {
 
   const item = await getItemBySlug(game.id, slug)
   if (!item || !item.isPublished) notFound()
+
+  const rawComments = await getCommentsByEntity(game.id, 'item', item.id)
+  const comments = rawComments.map((c) => ({
+    id: c.id,
+    authorName: c.authorName,
+    content: c.content,
+    upvotes: c.upvotes,
+    createdAt: c.createdAt.toISOString(),
+  }))
 
   const attrs = item.attributes
   const rarityColor = attrs.rarity ? (RARITY_COLORS[attrs.rarity] ?? 'text-foreground') : null
@@ -146,6 +157,13 @@ export default async function ItemPage({ params }: Props) {
       ) : (
         details
       )}
+
+      <Comments
+        comments={comments}
+        gameId={game.id}
+        entityType="item"
+        entityId={item.id}
+      />
     </div>
   )
 }

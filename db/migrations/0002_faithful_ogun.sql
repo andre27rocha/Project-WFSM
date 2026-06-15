@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ADD COLUMN "upvotes" integer DEFAULT 0 NOT NULL;

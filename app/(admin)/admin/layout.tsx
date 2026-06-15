@@ -31,6 +31,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   Games
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin/comments"
+                  className="rounded px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
+                >
+                  Comments
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

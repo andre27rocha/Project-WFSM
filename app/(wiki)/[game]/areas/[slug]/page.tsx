@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
 import { getAreaBySlug } from '@/lib/supabase/queries/areas'
+import { getCommentsByEntity } from '@/lib/supabase/queries/comments'
 import { SpoilerBlock } from '@/components/wiki/SpoilerBlock'
 import { WikiMarkdown } from '@/components/wiki/WikiMarkdown'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { Comments } from '@/components/wiki/Comments'
 
 interface Props {
   params: Promise<{ game: string; slug: string }>
@@ -35,6 +37,15 @@ export default async function AreaPage({ params }: Props) {
 
   const area = await getAreaBySlug(game.id, slug)
   if (!area || !area.isPublished) notFound()
+
+  const rawComments = await getCommentsByEntity(game.id, 'area', area.id)
+  const comments = rawComments.map((c) => ({
+    id: c.id,
+    authorName: c.authorName,
+    content: c.content,
+    upvotes: c.upvotes,
+    createdAt: c.createdAt.toISOString(),
+  }))
 
   const details = (
     <div className="space-y-5">
@@ -90,6 +101,13 @@ export default async function AreaPage({ params }: Props) {
       ) : (
         details
       )}
+
+      <Comments
+        comments={comments}
+        gameId={game.id}
+        entityType="area"
+        entityId={area.id}
+      />
     </div>
   )
 }
