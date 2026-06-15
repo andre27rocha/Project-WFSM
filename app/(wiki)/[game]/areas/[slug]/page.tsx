@@ -37,17 +37,19 @@ export default async function AreaPage({ params }: Props) {
   if (!area || !area.isPublished) notFound()
 
   const details = (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {area.description && (
-        <p className="text-lg leading-relaxed text-muted-foreground">{area.description}</p>
+        <p className="text-sm leading-relaxed text-muted-foreground">{area.description}</p>
       )}
 
       {area.content && <WikiMarkdown content={area.content} />}
 
       {area.mapImageUrl && (
         <div>
-          <h2 className="mb-3 text-lg font-semibold text-foreground">Map</h2>
-          <div className="relative w-full overflow-hidden rounded-lg border border-border">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Area Map
+          </h2>
+          <div className="relative w-full overflow-hidden rounded border border-border">
             <Image
               src={area.mapImageUrl}
               alt={`${area.name} map`}
@@ -62,25 +64,25 @@ export default async function AreaPage({ params }: Props) {
   )
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="mb-6 text-sm text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="transition-colors hover:text-primary">
+    <div className="px-6 py-5">
+      <p className="mb-3 text-xs text-muted-foreground">
+        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
           {game.name}
         </Link>{' '}
         /{' '}
-        <Link href={`/${gameSlug}/areas`} className="transition-colors hover:text-primary">
+        <Link href={`/${gameSlug}/areas`} className="hover:text-primary transition-colors">
           Areas
         </Link>{' '}
         / {area.name}
       </p>
 
       {area.imageUrl && (
-        <div className="relative mb-6 h-48 w-full overflow-hidden rounded-xl">
+        <div className="relative mb-4 h-44 w-full overflow-hidden rounded">
           <Image src={area.imageUrl} alt={area.name} fill className="object-cover" priority />
         </div>
       )}
 
-      <h1 className="mb-6 text-3xl font-semibold text-foreground">{area.name}</h1>
+      <h1 className="mb-4 text-2xl font-bold text-foreground">{area.name}</h1>
 
       {area.spoilerLevel > 0 ? (
         <SpoilerBlock level={area.spoilerLevel} label={area.name}>
@@ -89,6 +91,6 @@ export default async function AreaPage({ params }: Props) {
       ) : (
         details
       )}
-    </main>
+    </div>
   )
 }

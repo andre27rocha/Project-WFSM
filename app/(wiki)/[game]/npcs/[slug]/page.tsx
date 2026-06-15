@@ -38,65 +38,82 @@ export default async function NpcPage({ params }: Props) {
 
   const attrs = npc.attributes
 
-  const details = (
-    <div className="space-y-8">
-      {npc.description && (
-        <p className="text-lg leading-relaxed text-muted-foreground">{npc.description}</p>
-      )}
+  const hasDetails =
+    attrs.role ||
+    attrs.questRelated ||
+    (attrs.services ?? []).length > 0 ||
+    (attrs.dialogueHints ?? []).length > 0
 
-      {npc.content && <WikiMarkdown content={npc.content} />}
-
-      {(attrs.role ||
-        attrs.questRelated ||
-        (attrs.services ?? []).length > 0 ||
-        (attrs.dialogueHints ?? []).length > 0) && (
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold text-foreground">Details</h2>
-          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            {attrs.role && (
-              <>
-                <dt className="text-muted-foreground">Role</dt>
-                <dd className="font-medium text-foreground">{attrs.role}</dd>
-              </>
-            )}
-            {attrs.questRelated && (
-              <>
-                <dt className="text-muted-foreground">Quest</dt>
-                <dd className="font-medium text-foreground">Yes</dd>
-              </>
-            )}
-            {(attrs.services ?? []).length > 0 && (
-              <>
-                <dt className="text-muted-foreground">Services</dt>
-                <dd className="font-medium text-foreground">{attrs.services!.join(', ')}</dd>
-              </>
-            )}
-          </dl>
+  const infobox = hasDetails && (
+    <aside className="mb-6 w-full overflow-hidden rounded border border-border bg-card lg:mb-0 lg:w-56 lg:shrink-0 xl:w-64">
+      {npc.imageUrl && (
+        <div className="relative h-48 w-full">
+          <Image src={npc.imageUrl} alt={npc.name} fill className="object-cover" priority />
         </div>
       )}
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-border bg-primary/10">
+            <th
+              colSpan={2}
+              className="px-3 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-primary"
+            >
+              Info
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {attrs.role && (
+            <tr className="border-b border-border/40">
+              <td className="w-24 px-3 py-1.5 text-xs text-muted-foreground">Role</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">{attrs.role}</td>
+            </tr>
+          )}
+          {attrs.questRelated && (
+            <tr className="border-b border-border/40">
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Quest</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">Yes</td>
+            </tr>
+          )}
+          {(attrs.services ?? []).length > 0 && (
+            <tr>
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Services</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">
+                {attrs.services!.join(', ')}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </aside>
+  )
+
+  const details = (
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+      <div className="min-w-0 flex-1 space-y-5">
+        {npc.description && (
+          <p className="text-sm leading-relaxed text-muted-foreground">{npc.description}</p>
+        )}
+        {npc.content && <WikiMarkdown content={npc.content} />}
+      </div>
+      {infobox}
     </div>
   )
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="mb-6 text-sm text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="transition-colors hover:text-primary">
+    <div className="px-6 py-5">
+      <p className="mb-3 text-xs text-muted-foreground">
+        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
           {game.name}
         </Link>{' '}
         /{' '}
-        <Link href={`/${gameSlug}/npcs`} className="transition-colors hover:text-primary">
+        <Link href={`/${gameSlug}/npcs`} className="hover:text-primary transition-colors">
           NPCs
         </Link>{' '}
         / {npc.name}
       </p>
 
-      {npc.imageUrl && (
-        <div className="relative mb-6 h-64 w-full overflow-hidden rounded-xl">
-          <Image src={npc.imageUrl} alt={npc.name} fill className="object-cover" priority />
-        </div>
-      )}
-
-      <h1 className="mb-6 text-3xl font-semibold text-foreground">{npc.name}</h1>
+      <h1 className="mb-5 text-2xl font-bold text-foreground">{npc.name}</h1>
 
       {npc.spoilerLevel > 0 ? (
         <SpoilerBlock level={npc.spoilerLevel} label={npc.name}>
@@ -105,6 +122,6 @@ export default async function NpcPage({ params }: Props) {
       ) : (
         details
       )}
-    </main>
+    </div>
   )
 }

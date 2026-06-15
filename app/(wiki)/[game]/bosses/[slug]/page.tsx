@@ -38,85 +38,113 @@ export default async function BossPage({ params }: Props) {
 
   const attrs = boss.attributes
 
-  const details = (
-    <div className="space-y-8">
-      {boss.description && (
-        <p className="text-lg leading-relaxed text-muted-foreground">{boss.description}</p>
-      )}
+  const hasStats =
+    attrs.hp !== undefined ||
+    attrs.phases !== undefined ||
+    attrs.location ||
+    (attrs.rewards ?? []).length > 0 ||
+    (attrs.weaknesses ?? []).length > 0 ||
+    (attrs.resistances ?? []).length > 0
 
-      {boss.content && <WikiMarkdown content={boss.content} />}
-
-      {(attrs.hp !== undefined ||
-        attrs.phases !== undefined ||
-        attrs.location ||
-        (attrs.rewards ?? []).length > 0 ||
-        (attrs.weaknesses ?? []).length > 0 ||
-        (attrs.resistances ?? []).length > 0) && (
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold text-foreground">Stats &amp; Info</h2>
-          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            {attrs.hp !== undefined && (
-              <>
-                <dt className="text-muted-foreground">HP</dt>
-                <dd className="font-medium text-foreground">{attrs.hp.toLocaleString()}</dd>
-              </>
-            )}
-            {attrs.phases !== undefined && (
-              <>
-                <dt className="text-muted-foreground">Phases</dt>
-                <dd className="font-medium text-foreground">{attrs.phases}</dd>
-              </>
-            )}
-            {attrs.location && (
-              <>
-                <dt className="text-muted-foreground">Location</dt>
-                <dd className="font-medium text-foreground">{attrs.location}</dd>
-              </>
-            )}
-            {(attrs.weaknesses ?? []).length > 0 && (
-              <>
-                <dt className="text-muted-foreground">Weaknesses</dt>
-                <dd className="font-medium text-foreground">{attrs.weaknesses!.join(', ')}</dd>
-              </>
-            )}
-            {(attrs.resistances ?? []).length > 0 && (
-              <>
-                <dt className="text-muted-foreground">Resistances</dt>
-                <dd className="font-medium text-foreground">{attrs.resistances!.join(', ')}</dd>
-              </>
-            )}
-            {(attrs.rewards ?? []).length > 0 && (
-              <>
-                <dt className="text-muted-foreground">Rewards</dt>
-                <dd className="font-medium text-foreground">{attrs.rewards!.join(', ')}</dd>
-              </>
-            )}
-          </dl>
+  const infobox = hasStats && (
+    <aside className="mb-6 w-full overflow-hidden rounded border border-border bg-card lg:mb-0 lg:w-56 lg:shrink-0 xl:w-64">
+      {boss.imageUrl && (
+        <div className="relative h-48 w-full">
+          <Image src={boss.imageUrl} alt={boss.name} fill className="object-cover" priority />
         </div>
       )}
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-border bg-primary/10">
+            <th
+              colSpan={2}
+              className="px-3 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-primary"
+            >
+              Stats
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {attrs.hp !== undefined && (
+            <tr className="border-b border-border/40">
+              <td className="w-24 px-3 py-1.5 text-xs text-muted-foreground">HP</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">
+                {attrs.hp.toLocaleString()}
+              </td>
+            </tr>
+          )}
+          {attrs.phases !== undefined && (
+            <tr className="border-b border-border/40">
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Phases</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">{attrs.phases}</td>
+            </tr>
+          )}
+          {attrs.location && (
+            <tr className="border-b border-border/40">
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Location</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">{attrs.location}</td>
+            </tr>
+          )}
+          {(attrs.weaknesses ?? []).length > 0 && (
+            <tr className="border-b border-border/40">
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Weak</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">
+                {attrs.weaknesses!.join(', ')}
+              </td>
+            </tr>
+          )}
+          {(attrs.resistances ?? []).length > 0 && (
+            <tr className="border-b border-border/40">
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Resist</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">
+                {attrs.resistances!.join(', ')}
+              </td>
+            </tr>
+          )}
+          {(attrs.rewards ?? []).length > 0 && (
+            <tr>
+              <td className="px-3 py-1.5 text-xs text-muted-foreground">Drops</td>
+              <td className="px-3 py-1.5 font-medium text-foreground">
+                {attrs.rewards!.join(', ')}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </aside>
+  )
+
+  const details = (
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+      {/* Main content */}
+      <div className="min-w-0 flex-1 space-y-5">
+        {boss.description && (
+          <p className="text-sm leading-relaxed text-muted-foreground">{boss.description}</p>
+        )}
+        {boss.content && <WikiMarkdown content={boss.content} />}
+      </div>
+
+      {/* Infobox — right column on desktop, top on mobile */}
+      {infobox}
     </div>
   )
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="mb-6 text-sm text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="transition-colors hover:text-primary">
+    <div className="px-6 py-5">
+      {/* Breadcrumb */}
+      <p className="mb-3 text-xs text-muted-foreground">
+        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
           {game.name}
         </Link>{' '}
         /{' '}
-        <Link href={`/${gameSlug}/bosses`} className="transition-colors hover:text-primary">
+        <Link href={`/${gameSlug}/bosses`} className="hover:text-primary transition-colors">
           Bosses
         </Link>{' '}
         / {boss.name}
       </p>
 
-      {boss.imageUrl && (
-        <div className="relative mb-6 h-64 w-full overflow-hidden rounded-xl">
-          <Image src={boss.imageUrl} alt={boss.name} fill className="object-cover" priority />
-        </div>
-      )}
-
-      <h1 className="mb-6 text-3xl font-semibold text-foreground">{boss.name}</h1>
+      {/* Page title — full width, no image here (image is in infobox) */}
+      <h1 className="mb-5 text-2xl font-bold text-foreground">{boss.name}</h1>
 
       {boss.spoilerLevel > 0 ? (
         <SpoilerBlock level={boss.spoilerLevel} label={boss.name}>
@@ -125,6 +153,6 @@ export default async function BossPage({ params }: Props) {
       ) : (
         details
       )}
-    </main>
+    </div>
   )
 }

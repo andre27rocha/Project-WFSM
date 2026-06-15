@@ -24,3 +24,5 @@ export type {
   Release,
   TierListEntry,
 } from '@/db/schema'
+
+export type { BossWithArea } from '@/lib/supabase/queries/bosses'

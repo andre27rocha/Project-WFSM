@@ -1,7 +1,9 @@
 import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { bosses } from '@/db/schema'
-import type { Boss, NewBoss } from '@/types'
+import type { Area, Boss, NewBoss } from '@/types'
+
+export type BossWithArea = Boss & { area: Area | null }
 
 export async function getBossBySlug(gameId: string, slug: string): Promise<Boss | null> {
   try {
@@ -36,6 +38,20 @@ export async function getPublishedBossesByGame(gameId: string): Promise<Boss[]> 
     })
   } catch (error) {
     console.error('[getPublishedBossesByGame]', error)
+    throw new Error('Failed to fetch bosses')
+  }
+}
+
+export async function getPublishedBossesByGameWithArea(gameId: string): Promise<BossWithArea[]> {
+  try {
+    const result = await db.query.bosses.findMany({
+      where: and(eq(bosses.gameId, gameId), eq(bosses.isPublished, true)),
+      orderBy: (b, { asc }) => [asc(b.sortOrder), asc(b.name)],
+      with: { area: true },
+    })
+    return result as BossWithArea[]
+  } catch (error) {
+    console.error('[getPublishedBossesByGameWithArea]', error)
     throw new Error('Failed to fetch bosses')
   }
 }

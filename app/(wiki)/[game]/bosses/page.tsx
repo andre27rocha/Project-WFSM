@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
-import { getPublishedBossesByGame } from '@/lib/supabase/queries/bosses'
+import { getPublishedBossesByGameWithArea } from '@/lib/supabase/queries/bosses'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -21,50 +21,110 @@ export default async function BossListPage({ params }: Props) {
   const game = await getGameBySlug(gameSlug)
   if (!game || !game.isPublished) notFound()
 
-  const bosses = await getPublishedBossesByGame(game.id)
+  const bosses = await getPublishedBossesByGameWithArea(game.id)
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <p className="mb-1 text-sm text-muted-foreground">
-        <Link href={`/${gameSlug}`} className="transition-colors hover:text-primary">
+    <div className="px-6 py-5">
+      <p className="mb-1 text-xs text-muted-foreground">
+        <Link href={`/${gameSlug}`} className="hover:text-primary transition-colors">
           {game.name}
         </Link>{' '}
         / Bosses
       </p>
-      <h1 className="mb-8 text-3xl font-semibold text-foreground">Bosses</h1>
+      <h1 className="mb-4 text-xl font-bold text-foreground">Bosses</h1>
 
       {bosses.length === 0 ? (
-        <p className="text-muted-foreground">No bosses yet.</p>
+        <p className="text-sm text-muted-foreground">No bosses yet.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {bosses.map((boss) => (
-            <Link
-              key={boss.id}
-              href={`/${gameSlug}/bosses/${boss.slug}`}
-              className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/50"
-            >
-              {boss.imageUrl && (
-                <div className="relative h-40 w-full overflow-hidden">
-                  <Image
-                    src={boss.imageUrl}
-                    alt={boss.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-              )}
-              <div className="p-4">
-                <p className="font-semibold text-foreground">{boss.name}</p>
-                {boss.description && (
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                    {boss.description}
-                  </p>
-                )}
-              </div>
-            </Link>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-border bg-card/60">
+                <th className="w-14 px-3 py-2 text-left" />
+                <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Name
+                </th>
+                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:table-cell">
+                  Area
+                </th>
+                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground md:table-cell">
+                  HP
+                </th>
+                <th className="hidden px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground md:table-cell">
+                  Phases
+                </th>
+                <th className="w-8 px-3 py-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {bosses.map((boss, i) => {
+                const attrs = boss.attributes
+                return (
+                  <tr
+                    key={boss.id}
+                    className={`border-b border-border/50 hover:bg-primary/5 transition-colors ${i % 2 === 1 ? 'bg-card/25' : ''}`}
+                  >
+                    <td className="px-3 py-2">
+                      {boss.imageUrl ? (
+                        <Image
+                          src={boss.imageUrl}
+                          alt={boss.name}
+                          width={40}
+                          height={40}
+                          className="h-10 w-10 rounded object-cover"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded bg-muted" />
+                      )}
+                    </td>
+                    <td className="px-3 py-2">
+                      <Link
+                        href={`/${gameSlug}/bosses/${boss.slug}`}
+                        className="font-medium text-foreground hover:text-primary transition-colors"
+                      >
+                        {boss.name}
+                      </Link>
+                      {boss.description && (
+                        <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                          {boss.description}
+                        </p>
+                      )}
+                    </td>
+                    <td className="hidden px-3 py-2 text-muted-foreground sm:table-cell">
+                      {boss.area ? (
+                        <Link
+                          href={`/${gameSlug}/areas/${boss.area.slug}`}
+                          className="hover:text-primary transition-colors"
+                        >
+                          {boss.area.name}
+                        </Link>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                    <td className="hidden px-3 py-2 font-mono text-muted-foreground md:table-cell">
+                      {attrs.hp !== undefined ? attrs.hp.toLocaleString() : '—'}
+                    </td>
+                    <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">
+                      {attrs.phases !== undefined ? attrs.phases : '—'}
+                    </td>
+                    <td className="px-3 py-2 text-center">
+                      {boss.spoilerLevel > 0 && (
+                        <span
+                          title={`Spoiler level ${boss.spoilerLevel}`}
+                          className="text-xs text-amber-500/70"
+                        >
+                          ⚠
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       )}
-    </main>
+    </div>
   )
 }
