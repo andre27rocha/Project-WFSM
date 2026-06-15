@@ -760,7 +760,7 @@ A task is **done** when:
 - [x] Comments system on every entity page (boss, item, NPC, area)
 - [x] SEO on-page — meta tags, schema.org (`VideoGame`, `ItemList`), sitemap update
 - [x] Tier list for items/spirits — dnd-kit drag & drop, state in URL
-- [ ] 100% guide / Achievements page
+- [x] 100% guide / Achievements page
 - [ ] Beginner guide for the genre
 
 ---
