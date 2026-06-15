@@ -1,7 +1,48 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { db } from '@/db'
-import { areas } from '@/db/schema'
+import { areas, bosses, npcs } from '@/db/schema'
 import type { Area, NewArea } from '@/types'
+
+export type AreaContentCount = { bosses: number; npcs: number }
+
+/**
+ * Published boss + NPC counts per area for a game, keyed by area id.
+ * Items are not linked to areas in the schema, so only these two are counted.
+ */
+export async function getAreaContentCounts(
+  gameId: string
+): Promise<Record<string, AreaContentCount>> {
+  try {
+    const [bossRows, npcRows] = await Promise.all([
+      db
+        .select({ areaId: bosses.areaId, count: sql<number>`count(*)::int` })
+        .from(bosses)
+        .where(and(eq(bosses.gameId, gameId), eq(bosses.isPublished, true)))
+        .groupBy(bosses.areaId),
+      db
+        .select({ areaId: npcs.areaId, count: sql<number>`count(*)::int` })
+        .from(npcs)
+        .where(and(eq(npcs.gameId, gameId), eq(npcs.isPublished, true)))
+        .groupBy(npcs.areaId),
+    ])
+
+    const counts: Record<string, AreaContentCount> = {}
+    for (const row of bossRows) {
+      if (!row.areaId) continue
+      counts[row.areaId] ??= { bosses: 0, npcs: 0 }
+      counts[row.areaId].bosses = row.count
+    }
+    for (const row of npcRows) {
+      if (!row.areaId) continue
+      counts[row.areaId] ??= { bosses: 0, npcs: 0 }
+      counts[row.areaId].npcs = row.count
+    }
+    return counts
+  } catch (error) {
+    console.error('[getAreaContentCounts]', error)
+    throw new Error('Failed to fetch area content counts')
+  }
+}
 
 export async function getAreaBySlug(gameId: string, slug: string): Promise<Area | null> {
   try {

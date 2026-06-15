@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getGameBySlug } from '@/lib/supabase/queries/games'
-import { getPublishedAreasByGame } from '@/lib/supabase/queries/areas'
+import { getPublishedAreasByGame, getAreaContentCounts } from '@/lib/supabase/queries/areas'
 import { WikiBreadcrumb } from '@/components/wiki/WikiBreadcrumb'
+import { WikiImage } from '@/components/wiki/WikiImage'
+import { WikiPage } from '@/components/wiki/WikiPage'
 
 interface Props {
   params: Promise<{ game: string }>
@@ -22,51 +23,66 @@ export default async function AreaListPage({ params }: Props) {
   const game = await getGameBySlug(gameSlug)
   if (!game || !game.isPublished) notFound()
 
-  const areas = await getPublishedAreasByGame(game.id)
+  const [areas, counts] = await Promise.all([
+    getPublishedAreasByGame(game.id),
+    getAreaContentCounts(game.id),
+  ])
 
   return (
-    <div className="px-6 py-5">
-      <WikiBreadcrumb
-        crumbs={[{ label: game.name, href: `/${gameSlug}` }, { label: 'Areas' }]}
-      />
-      <h1 className="mb-4 border-b border-primary/40 pb-1 text-xl font-bold text-foreground">
-        Areas
-      </h1>
+    <WikiPage>
+      <WikiBreadcrumb crumbs={[{ label: game.name, href: `/${gameSlug}` }, { label: 'Areas' }]} />
+      <h1 className="text-foreground mb-2 text-2xl font-bold">Areas</h1>
+      <div className="from-primary/60 mb-3 h-0.5 w-full bg-gradient-to-r to-transparent" />
+      <p className="text-muted-foreground mb-6 text-sm">
+        {areas.length} {areas.length === 1 ? 'area' : 'areas'} in {game.name}.
+      </p>
 
       {areas.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No areas yet.</p>
+        <p className="text-muted-foreground text-sm">No areas yet.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-          {areas.map((area) => (
-            <Link
-              key={area.id}
-              href={`/${gameSlug}/areas/${area.slug}`}
-              className="group overflow-hidden rounded border border-wiki-border bg-[#1a1a2e] transition-colors hover:border-primary/50"
-            >
-              {area.imageUrl && (
-                <div className="relative h-32 w-full overflow-hidden">
-                  <Image
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {areas.map((area) => {
+            const count = counts[area.id]
+            return (
+              <Link
+                key={area.id}
+                href={`/${gameSlug}/areas/${area.slug}`}
+                className="group border-wiki-border bg-wiki-card hover:border-primary/40 flex flex-col overflow-hidden rounded border transition-colors"
+              >
+                <div className="relative h-36 w-full overflow-hidden">
+                  <WikiImage
                     src={area.imageUrl}
                     alt={area.name}
                     fill
+                    sizes="(max-width: 640px) 100vw, 400px"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-              )}
-              <div className="p-3">
-                <p className="text-sm font-semibold text-primary transition-colors group-hover:underline group-hover:underline-offset-2">
-                  {area.name}
-                </p>
-                {area.description && (
-                  <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                    {area.description}
+                <div className="flex flex-1 flex-col p-4">
+                  <p className="text-primary font-semibold transition-colors group-hover:underline group-hover:underline-offset-2">
+                    {area.name}
                   </p>
-                )}
-              </div>
-            </Link>
-          ))}
+                  {area.description && (
+                    <p className="text-muted-foreground mt-1.5 line-clamp-2 flex-1 text-sm leading-relaxed">
+                      {area.description}
+                    </p>
+                  )}
+                  <div className="border-wiki-border text-muted-foreground mt-3 flex items-center gap-4 border-t pt-3 text-xs">
+                    <span>
+                      <span className="text-foreground font-semibold">{count?.bosses ?? 0}</span>{' '}
+                      {count?.bosses === 1 ? 'Boss' : 'Bosses'}
+                    </span>
+                    <span>
+                      <span className="text-foreground font-semibold">{count?.npcs ?? 0}</span>{' '}
+                      {count?.npcs === 1 ? 'NPC' : 'NPCs'}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       )}
-    </div>
+    </WikiPage>
   )
 }
