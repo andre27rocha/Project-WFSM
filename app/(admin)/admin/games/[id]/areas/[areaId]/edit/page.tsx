@@ -27,6 +27,8 @@ export default async function EditAreaPage({ params }: Props) {
     content: area.content ?? '',
     imageUrl: area.imageUrl ?? '',
     mapImageUrl: area.mapImageUrl ?? '',
+    mapX: area.mapX?.toString() ?? '',
+    mapY: area.mapY?.toString() ?? '',
     spoilerLevel: area.spoilerLevel,
     sortOrder: area.sortOrder,
     isPublished: area.isPublished,

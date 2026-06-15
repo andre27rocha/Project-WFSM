@@ -33,6 +33,8 @@ export const areaSchema = z.object({
   content: z.string(),
   imageUrl: z.string(),
   mapImageUrl: z.string(),
+  mapX: z.string(),
+  mapY: z.string(),
   spoilerLevel,
   sortOrder,
   isPublished: z.boolean(),

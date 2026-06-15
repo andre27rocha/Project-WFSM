@@ -10,7 +10,7 @@ import { config } from 'dotenv'
 // Must be first — loads DATABASE_URL before any drizzle/postgres init
 config({ path: '.env.local' })
 
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './schema'
@@ -57,6 +57,8 @@ White Parish is the opening area of Ender Lilies and the place where Lily first 
 - **Lily's Rest** — the altar where Lily begins her journey; the White Priest August first speaks to her here
 - **Outer Courtyard** — a collapsed garden connecting the nave to the Underground Cemetery
 - **Bell Tower** — a high vantage point with a relic chest and a shortcut lever`,
+    mapX: 22,
+    mapY: 28,
     sortOrder: 1,
     spoilerLevel: 0,
   },
@@ -79,6 +81,8 @@ The Witch's Thicket lies beyond the Parish walls. What was once a sacred forest 
 - **Witches' Confluence** — the clearing where Eleine and Miriam's territories meet
 - **The Hanging Garden** — an elevated platform maze rich with relics
 - **Hidden Spring** — a secret pool that restores full HP, activated by a nearby rune`,
+    mapX: 18,
+    mapY: 45,
     sortOrder: 2,
     spoilerLevel: 0,
   },
@@ -101,6 +105,8 @@ The Underground Cemetery predates the kingdom of End itself. Generations of roya
 - **Royal Mausoleum** — the sealed tombs of the last three monarchs, containing a powerful relic behind a puzzle lock
 - **Knight's Interment Hall** — where the Order of the White Knights were buried en masse; Gerrod's arena is here
 - **The Ossuary** — a room of bones and dust where a hidden passage leads to the Cliffside Hamlet`,
+    mapX: 38,
+    mapY: 40,
     sortOrder: 3,
     spoilerLevel: 0,
   },
@@ -123,6 +129,8 @@ The Verboten Domain encompasses the inner castle precincts: the throne wing, the
 - **The War Room** — a large hall with strategic maps still pinned to collapsed tables; contains a lore item about the Blight's origin
 - **Royal Armory** — a room of rusted weapons where Faden's arena lies
 - **Throne Hall Approach** — a grand corridor leading to a sealed throne room requiring all knight spirits`,
+    mapX: 65,
+    mapY: 38,
     sortOrder: 4,
     spoilerLevel: 0,
   },
@@ -145,6 +153,8 @@ Cliffside Hamlet was a prosperous market village before the Blight came. Its tie
 - **The Market Square** — the central hub connecting all hamlet tiers; save shrine here
 - **The Watchtower** — the highest point in the hamlet with a view of the kingdom and a powerful relic in a locked chest
 - **Rope Bridge Traverse** — the connection to the Cliffside Hamlet's deeper section where Ribald waits`,
+    mapX: 80,
+    mapY: 25,
     sortOrder: 5,
     spoilerLevel: 0,
   },
@@ -167,6 +177,8 @@ The Eternal Cloister is the largest structure in the kingdom after the central c
 - **The Grand Library** — multi-storey room with climbable bookshelves and multiple lore scrolls
 - **Research Chambers** — where Hoenir's arena is located, amid his failed experiments
 - **The Relic Vault** — a sealed chamber accessible only with a specific key item, containing two high-tier relics`,
+    mapX: 60,
+    mapY: 18,
     sortOrder: 6,
     spoilerLevel: 0,
   },
@@ -189,6 +201,8 @@ The Subterranean Hall is a network of wide underground corridors originally buil
 - **The Drainage Hub** — a large circular chamber where multiple passage branches meet; key shortcut node
 - **Dorothea's Reservoir** — a flooded section of the hall where Dorothea has made her territory
 - **The Collapsed Section** — a caved-in area requiring a specific spirit to bypass, leading to a shortcut to the Ancient Hollow`,
+    mapX: 50,
+    mapY: 58,
     sortOrder: 7,
     spoilerLevel: 0,
   },
@@ -211,6 +225,8 @@ The Ancient Hollow lies below even the Subterranean Hall, accessible only throug
 - **The Primordial Chamber** — a vast room with a ceiling too high to see, containing the oldest lore inscriptions in the game
 - **Ulv's Sanctum** — a sealed arena where the Mad Knight waits
 - **The Deep Spring** — a healing spring accessible only after defeating the inner sanctum guardian`,
+    mapX: 48,
+    mapY: 75,
     sortOrder: 8,
     spoilerLevel: 0,
   },
@@ -233,6 +249,8 @@ The Stockade housed the kingdom's worst offenders — murderers, traitors, those
 - **Cell Block A** — the general population wing; several hidden items in breakable cells
 - **The Deep Keep** — maximum security section where Warrior Lambach is confined
 - **Interrogation Chamber** — a room with lore items describing the crimes of specific prisoners`,
+    mapX: 20,
+    mapY: 65,
     sortOrder: 9,
     spoilerLevel: 0,
   },
@@ -244,6 +262,8 @@ The Stockade housed the kingdom's worst offenders — murderers, traitors, those
 End's Depths is the final area of the game, accessible only after gathering all main spirits. The architecture here has been entirely consumed by the Blight, which has crystallised the stone walls and pooled in luminous lakes on the ground. The air itself feels wrong — heavy with meaning and with dread.
 
 The true origin of the Blight and the fate of the kingdom is revealed here through environmental storytelling and the final confrontation.`,
+    mapX: 48,
+    mapY: 90,
     sortOrder: 10,
     spoilerLevel: 2,
   },
@@ -1464,11 +1484,19 @@ async function main() {
       slug: slugify(a.name),
       description: a.description,
       content: a.content,
+      mapX: a.mapX,
+      mapY: a.mapY,
       sortOrder: a.sortOrder,
       spoilerLevel: a.spoilerLevel,
       isPublished: true,
     }))
-  ).onConflictDoNothing()
+  ).onConflictDoUpdate({
+    target: [schema.areas.gameId, schema.areas.slug],
+    set: {
+      mapX: sql`excluded.map_x`,
+      mapY: sql`excluded.map_y`,
+    },
+  })
 
   const areaRows = await db.query.areas.findMany({
     where: eq(schema.areas.gameId, gameId),

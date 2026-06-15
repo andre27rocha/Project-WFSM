@@ -39,6 +39,8 @@ export function AreaForm({ action, defaultValues, cancelHref }: AreaFormProps) {
       content: '',
       imageUrl: '',
       mapImageUrl: '',
+      mapX: '',
+      mapY: '',
       spoilerLevel: 0,
       sortOrder: 0,
       isPublished: false,
@@ -106,6 +108,38 @@ export function AreaForm({ action, defaultValues, cancelHref }: AreaFormProps) {
             className={inputCls}
             placeholder="https://…"
             {...register('mapImageUrl')}
+          />
+        </div>
+
+        <div>
+          <label className={labelCls} htmlFor="area-mapX">
+            Map X (0–100, % from left)
+          </label>
+          <input
+            id="area-mapX"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            className={inputCls}
+            placeholder="50"
+            {...register('mapX')}
+          />
+        </div>
+
+        <div>
+          <label className={labelCls} htmlFor="area-mapY">
+            Map Y (0–100, % from top)
+          </label>
+          <input
+            id="area-mapY"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            className={inputCls}
+            placeholder="50"
+            {...register('mapY')}
           />
         </div>
 

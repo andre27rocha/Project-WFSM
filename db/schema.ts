@@ -4,6 +4,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  real,
   text,
   timestamp,
   unique,
@@ -105,6 +106,10 @@ export const areas = pgTable(
     content: text('content'),
     imageUrl: text('image_url'),
     mapImageUrl: text('map_image_url'),
+    /** X position on the world map (0–100, percentage from left). */
+    mapX: real('map_x'),
+    /** Y position on the world map (0–100, percentage from top). */
+    mapY: real('map_y'),
     spoilerLevel: integer('spoiler_level').notNull().default(0),
     sortOrder: integer('sort_order').notNull().default(0),
     isPublished: boolean('is_published').notNull().default(false),

@@ -11,6 +11,12 @@ import {
 
 type ActionResult = { error: string } | null
 
+function parseCoord(val: string): number | null {
+  if (!val.trim()) return null
+  const n = parseFloat(val)
+  return isNaN(n) ? null : Math.max(0, Math.min(100, n))
+}
+
 export async function createAreaAction(
   gameId: string,
   data: AreaFormData
@@ -29,6 +35,8 @@ export async function createAreaAction(
       content: d.content || null,
       imageUrl: d.imageUrl || null,
       mapImageUrl: d.mapImageUrl || null,
+      mapX: parseCoord(d.mapX),
+      mapY: parseCoord(d.mapY),
       spoilerLevel: d.spoilerLevel,
       sortOrder: d.sortOrder,
       isPublished: d.isPublished,
@@ -58,6 +66,8 @@ export async function updateAreaAction(
       content: d.content || null,
       imageUrl: d.imageUrl || null,
       mapImageUrl: d.mapImageUrl || null,
+      mapX: parseCoord(d.mapX),
+      mapY: parseCoord(d.mapY),
       spoilerLevel: d.spoilerLevel,
       sortOrder: d.sortOrder,
       isPublished: d.isPublished,
