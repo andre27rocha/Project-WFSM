@@ -1452,7 +1452,20 @@ async function main() {
       tierlist: true,
     },
     isPublished: true,
-  }).onConflictDoNothing()
+  }).onConflictDoUpdate({
+    target: schema.games.slug,
+    set: {
+      isPublished: true,
+      gameConfig: {
+        bosses: true,
+        npcs: true,
+        areas: true,
+        relics: true,
+        spirits: true,
+        tierlist: true,
+      },
+    },
+  })
 
   const game = await db.query.games.findFirst({
     where: eq(schema.games.slug, 'ender-lilies'),
