@@ -767,19 +767,19 @@ A task is **done** when:
 
 ## Phase 3 Checklist — Global Features
 
-- [ ] Releases calendar page at `/releases` — visual calendar + filterable list
-- [ ] Global game tier list at `/tierlist` — same URL-sharing mechanic
-- [ ] Full-text search — Supabase FTS across bosses, items, NPCs, areas
-- [ ] Add Blasphemous to `games` table with `game_config` (prayers, rosary beads, sword hearts)
-- [ ] Identify Blasphemous-specific modules and add to schema if needed
-- [ ] Populate Blasphemous content (bosses, items, NPCs, areas)
-- [ ] Add Salt and Sanctuary to `games` table with `game_config` (skill trees, weapon types)
-- [ ] Populate Salt and Sanctuary content
-- [ ] Add Ender Magnolia to `games` table
-- [ ] Populate Ender Magnolia content
+- [x] Releases calendar page at `/releases` — visual calendar + filterable list
+- [x] Global game tier list at `/tierlist` — same URL-sharing mechanic
+- [x] Full-text search — Supabase FTS across bosses, items, NPCs, areas
+- [x] Add Blasphemous to `games` table with `game_config` (prayers, rosary beads, sword hearts)
+- [x] Identify Blasphemous-specific modules and add to schema if needed
+- [x] Populate Blasphemous content (bosses, items, NPCs, areas)
+- [x] Add Salt and Sanctuary to `games` table with `game_config` (skill trees, weapon types)
+- [x] Populate Salt and Sanctuary content
+- [x] Add Ender Magnolia to `games` table
+- [x] Populate Ender Magnolia content
 - [ ] Evaluate IGDB API integration for auto-populating `releases` table
-- [ ] Validate `game_config` correctly shows/hides modules per game on frontend
-- [ ] QA: confirm Ender Lilies pages unaffected by new schema additions
+- [x] Validate `game_config` correctly shows/hides modules per game on frontend
+- [x] QA: confirm Ender Lilies pages unaffected by new schema additions
 
 ---
 
