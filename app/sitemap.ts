@@ -11,7 +11,10 @@ import { getPublishedItemsWithType } from '@/lib/supabase/queries/items'
 const base = siteConfig.url
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const entries: MetadataRoute.Sitemap = [{ url: base, priority: 1 }]
+  const entries: MetadataRoute.Sitemap = [
+    { url: base, priority: 1 },
+    { url: `${base}/tierlist`, priority: 0.7 },
+  ]
 
   const games = await getPublishedGames()
 
@@ -21,6 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: game.updatedAt,
       priority: 0.9,
     })
+
+    if (game.gameConfig.tierlist) {
+      entries.push({ url: `${base}/${game.slug}/tierlist`, priority: 0.7 })
+    }
 
     if (game.gameConfig.bosses) {
       entries.push({ url: `${base}/${game.slug}/bosses`, priority: 0.8 })

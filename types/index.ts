@@ -27,3 +27,15 @@ export type {
 
 export type { BossWithArea } from '@/lib/supabase/queries/bosses'
 export type { ItemWithType } from '@/lib/supabase/queries/items'
+
+export type TierLevel = 'S' | 'A' | 'B' | 'C' | 'D'
+
+export type TierListState = {
+  [K in TierLevel]: string[]
+}
+
+export type TierListItem = {
+  id: string
+  name: string
+  imageUrl?: string | null
+}
