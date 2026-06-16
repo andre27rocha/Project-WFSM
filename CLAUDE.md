@@ -725,6 +725,131 @@ A task is **done** when:
 
 ---
 
+## 📊 Current State (as of 2026-06-16)
+
+**Where the project is:** Phases 1–3 are functionally complete. The full design overhaul (4 sprints) is done — every page type has its final look. **Architecture, design, and features are DONE. The remaining work is CONTENT.**
+
+| Area | Status |
+|---|---|
+| Foundation (Phase 1) | ✅ Complete |
+| Ender Lilies MVP (Phase 2) | ✅ Complete — reference standard |
+| Global features (Phase 3): releases, tier list, search | ✅ Complete |
+| 4 games published (Ender Lilies, Blasphemous, Salt & Sanctuary, Ender Magnolia) | ✅ Live |
+| Design overhaul (4 sprints, all pages) | ✅ Complete |
+| **Content depth across the 3 non-pilot games** | ❌ **INCOMPLETE — main remaining work** |
+| Community features (Phase 4) | ⏸️ Deferred |
+| AI chatbot (Phase 5) | ⏸️ Deferred |
+
+> **TL;DR for the next session:** The platform works and looks finished. Three of the four games are thin on content. The highest-value work right now is populating game data — not building features. See the Content Gaps section directly below.
+
+---
+
+## 📋 Content Gaps — What's Missing
+
+### Content Gaps (Priority for Next Session)
+
+Current state: **4 games published, but content is INCOMPLETE.** Ender Lilies is the only game at MVP-reference quality.
+
+| Game | Bosses | Boss Strategies | Items | Item Details | NPCs | Areas | Lore |
+|---|---|---|---|---|---|---|---|
+| Ender Lilies | 14/14 ✅ | ✅ | 34/34 ✅ | ✅ | 4/4 ✅ | ✅ | ✅ |
+| Blasphemous | 6/12 ❌ | ✅ | 27/? ⚠️ | ❌ | 5/? ⚠️ | 7/7 ✅ | ⚠️ partial |
+| Salt & Sanctuary | 5/? ❌ | ✅ | 14 classes only ❌ | ❌ | 4/? ⚠️ | 6/6 ✅ | ⚠️ minimal |
+| Ender Magnolia | 8/? ⚠️ | ✅ | 16/? ⚠️ | ⚠️ | 3/? ❌ | 10/10 ✅ | ❌ missing |
+
+Legend: ✅ = complete, ⚠️ = partial, ❌ = missing/incomplete
+
+---
+
+### Detailed Gaps per Game
+
+#### Ender Lilies
+✅ Complete (MVP reference standard — use this as the quality bar for all other games)
+
+#### Blasphemous
+Missing/Incomplete:
+- **Bosses:** Only 6 seeded. Real game has 12+ bosses — missing: Prie-Dieu, Deformed Father, etc.
+- **Items:** 27 items exist (prayers, rosary beads, hearts) but descriptions are minimal
+- **NPCs:** Only 5. Need more characters, their quests/dialogue
+- **Lore:** Very minimal — need world-building, story beats
+- **Boss Strategies:** Exist but could be more detailed (video callouts, safe spots, etc.)
+
+#### Salt & Sanctuary
+Missing/Incomplete:
+- **Bosses:** Only 5 seeded. Real game likely has more
+- **Items:** CRITICAL GAP — only "weapon classes" exist (14 entries). MISSING:
+  - Individual weapons within each class (e.g., "Longsword" in Swords, "Greatsword" in Greatswords)
+  - Armour pieces (helmets, chestplates, gauntlets, leggings)
+  - Accessories (rings, amulets)
+  - Consumables (potions, resins)
+- **NPCs:** Only 4. Need more, with quests
+- **Lore:** Minimal/missing
+- **Areas:** 6 exist, but no descriptions
+
+#### Ender Magnolia
+Missing/Incomplete:
+- **Bosses:** 8 seeded. Likely missing some (need to verify complete list)
+- **Items:** 16 items (10 Homunculi + 6 Relics) — descriptions minimal, need upgrade paths
+- **NPCs:** Only 3 — need to expand (game has more characters)
+- **Lore:** MISSING entirely — no story, world-building, character bios
+- **Areas:** 10 seeded with names, but descriptions/secrets missing
+
+#### General Content Gaps
+- Weapon/Item scaling (STR, DEX, etc.) — mostly missing except descriptions
+- Side quests — barely documented
+- Secrets/Hidden items — mostly missing
+- Achievement descriptions — exist but could be richer
+- Lore connections between games (cross-game glossary)
+
+---
+
+### Priority for Next Session (Content Sprint)
+
+**High Priority (impacts wiki quality immediately):**
+1. **Salt & Sanctuary — EXPAND ITEMS:**
+   - Research real weapon/armour list
+   - Create individual weapon entries (Longsword, Greatsword, etc. under Swords category)
+   - Add armour pieces
+   - Tier impact: This alone would 3x the wiki's items
+2. **Ender Magnolia — ADD LORE:**
+   - Game story beats
+   - Character bios
+   - World-building
+3. **Blasphemous — EXPAND BOSSES & NPCs:**
+   - Add missing bosses (verify complete boss list)
+   - Expand NPC dialogue/quests
+
+**Medium Priority:**
+- Boss strategies detail level
+- NPC quest documentation
+- Area secrets/hidden items
+
+**Low Priority (can defer):**
+- IGDB API integration (auto-populate releases)
+- AI Chatbot (Phase 5)
+- Community features (Discord, Patreon, etc.)
+
+---
+
+### Workflow to Close Gaps
+
+For next session:
+1. Pick 1 game to focus (recommend **Salt & Sanctuary** — weapon expansion is high ROI)
+2. Research complete item/boss lists
+3. Populate via admin panel or seed script
+4. Publish
+5. Repeat for other gaps
+
+### Admin Panel Notes for Next Session
+
+- `/admin/games/[id]/bosses/new` — add missing bosses
+- `/admin/games/[id]/items/new` — add individual weapons/armour
+- `/admin/games/[id]/npcs/new` — expand NPCs
+- `/admin/games/[id]/areas/[areaId]/edit` — add area descriptions
+- Update `game_config` if new item types needed (e.g., add an "armour" type for Salt & Sanctuary)
+
+---
+
 ## Phase 1 Checklist — Foundation ✅ COMPLETE
 
 - [x] Init Next.js project with TypeScript strict mode
@@ -765,25 +890,26 @@ A task is **done** when:
 
 ---
 
-## Phase 3 Checklist — Global Features
+## Phase 3 Checklist — Global Features & Games ✅ COMPLETE (content partial — see Content Gaps)
 
 - [x] Releases calendar page at `/releases` — visual calendar + filterable list
 - [x] Global game tier list at `/tierlist` — same URL-sharing mechanic
 - [x] Full-text search — Supabase FTS across bosses, items, NPCs, areas
 - [x] Add Blasphemous to `games` table with `game_config` (prayers, rosary beads, sword hearts)
 - [x] Identify Blasphemous-specific modules and add to schema if needed
-- [x] Populate Blasphemous content (bosses, items, NPCs, areas)
+- [x] Populate Blasphemous content (bosses, items, NPCs, areas) — ⚠️ partial, see gaps
 - [x] Add Salt and Sanctuary to `games` table with `game_config` (skill trees, weapon types)
-- [x] Populate Salt and Sanctuary content
+- [x] Populate Salt and Sanctuary content — ⚠️ partial, see gaps
 - [x] Add Ender Magnolia to `games` table
-- [x] Populate Ender Magnolia content
-- [ ] Evaluate IGDB API integration for auto-populating `releases` table
+- [x] Populate Ender Magnolia content — ⚠️ partial, see gaps
+- [ ] Evaluate IGDB API integration for auto-populating `releases` table — **optional, deferred**
 - [x] Validate `game_config` correctly shows/hides modules per game on frontend
 - [x] QA: confirm Ender Lilies pages unaffected by new schema additions
+- [x] **DESIGN OVERHAUL COMPLETE** — 4 sprints across all pages (global app-shell sidebar/header/homepage, game page redesign + per-game sidebar nav, boss/item/npc/area list pages, boss/item/npc/area detail pages)
 
 ---
 
-## Phase 4 Checklist — Community & Growth
+## Phase 4 Checklist — Community & Growth — ⏸️ DEFERRED
 
 - [ ] Setup Umami analytics (if not done in Phase 1)
 - [ ] Analytics review — identify top traffic pages
@@ -795,7 +921,7 @@ A task is **done** when:
 
 ---
 
-## Phase 5 Checklist — AI & Advanced Features
+## Phase 5 Checklist — AI & Advanced Features — ⏸️ DEFERRED
 
 - [ ] AI chatbot per game — RAG with wiki DB as context
 - [ ] Model selection: Claude Haiku or GPT-4o mini (low cost)
